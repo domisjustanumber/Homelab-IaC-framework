@@ -253,6 +253,30 @@ def test_new_entry_over_limit_is_reported_and_old_entry_is_not(tmp_path: Path) -
     assert not any(e.startswith(f"{old:04d}-x.md") for e in errors)
 
 
+def test_status_line_does_not_count_toward_the_entry_limit(tmp_path: Path) -> None:
+    new = cdl.LAST_UNLIMITED_ENTRY + 1
+    status = f"**Status:** accepted, 2026-10-24 (user); superseded by [{new + 1:04d}]({new + 1:04d}-y.md).\n"
+    body = "x" * (cdl.ENTRY_LIMIT - 10)
+    root = make_log(
+        tmp_path,
+        active=row(new + 1, "accepted", "y"),
+        historical=row(new, f"superseded by {new + 1:04d}"),
+        entries={f"{new:04d}-x.md": status + body, f"{new + 1:04d}-y.md": ""},
+    )
+    assert cdl.check(root) == []
+    assert cdl.read_path_size(root) == cdl.size(root / cdl.LOG_DIR / "README.md")
+
+
+def test_body_over_the_entry_limit_fails_with_a_status_line(tmp_path: Path) -> None:
+    new = cdl.LAST_UNLIMITED_ENTRY + 1
+    # The line break after the status line counts.
+    text = "**Status:** accepted, 2026-10-24 (user).\n" + "x" * cdl.ENTRY_LIMIT
+    root = make_log(tmp_path, active=row(new, "accepted"), entries={f"{new:04d}-x.md": text})
+    assert cdl.check(root) == [
+        f"{new:04d}-x.md: {cdl.ENTRY_LIMIT + 1} characters, limit {cdl.ENTRY_LIMIT}"
+    ]
+
+
 def test_open_work_at_80_percent_warns_and_passes(tmp_path: Path) -> None:
     near = "w" * int(cdl.OPEN_WORK_LIMIT * 0.9)
     root = make_log(tmp_path, entries={cdl.OPEN_WORK: near})

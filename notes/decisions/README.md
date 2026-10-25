@@ -21,6 +21,7 @@ These entries are `accepted` or `evidence`.
 
 | # | Decision | Status |
 |---|----------|--------|
+| [0001](0001-decision-log-agents-md-and-private-data.md) | Decision log of the framework and its rules; own IDs; restate a site rule only when cited; `AGENTS.md` only; no private data | accepted |
 
 ### Proposed
 
@@ -29,7 +30,6 @@ These entries wait for a decision of the user. Section is the section or area of
 
 | # | Decision | Section | Status |
 |---|----------|---------|--------|
-| [0001](0001-decision-log-agents-md-and-private-data.md) | Decision log of the framework and its rules; own IDs; restate a site rule only when cited; `AGENTS.md` only; no private data | `decision_log` | proposed |
 | [0002](0002-controller-vm.md) | The controller is a Debian 13 VM that runs tofu, Ansible, `op`, Semaphore and the runner | `controller` | proposed |
 | [0003](0003-controller-pushes-stacks.md) | The controller pushes Compose stacks; hosts hold no Git credentials | `stacks` | proposed |
 | [0004](0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
@@ -77,8 +77,8 @@ The open work is in [open-work.md](open-work.md).
   entry of the group. It changes no decision. Write one when the read-path limit fails.
 - Delete an open-work item when the work is done.
 - Keep the log inside its limits: 14,000 characters for this file, 20,000 for `open-work.md`, 6,000
-  for each entry, and 220,000 for the read path: this file, `open-work.md` and the Active entries.
-  Proposed and Historical entries are not in the read path. Put long evidence in a tracked file next
+  for each entry without its status line, and 220,000 for the read path: this file,
+  `open-work.md` and the Active entries. Proposed and Historical entries are not in the read path. Put long evidence in a tracked file next
   to the entry, and link to it. Put the script that produced a measurement in
   `notes/decisions/scripts/`. The Evidence section names it. Run
   `uv run python tools/check_decision_log.py` to see the read-path size and the warnings at 80% of a

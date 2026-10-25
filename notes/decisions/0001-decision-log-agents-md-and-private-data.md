@@ -1,6 +1,6 @@
 # 0001 — Decision log, `AGENTS.md`, `plans/` and private data
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-25 (user).
 
 ## Decision
 

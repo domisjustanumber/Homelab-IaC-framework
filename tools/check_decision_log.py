@@ -49,6 +49,8 @@ it finds a collision. It prints the age of the last ``git fetch``. It exits 1 wh
 pre-push hook in ``.pre-commit-config.yaml`` runs it. It does not fetch.
 
 Sizes are counted in characters after CRLF is changed to LF. About 4 characters make one token.
+The limit of an entry does not count its status line, because that line grows with each status
+change. The read path counts the whole file.
 All-digit entries up to ``LAST_UNLIMITED_ENTRY`` keep their length, because the body of an old entry
 does not change. An entry with ``renumber from XXXX`` or ``re-ID from XXXX`` keeps the exemption of
 XXXX. Standard library and the git CLI only, with no import from another repo (decision 0001).
@@ -135,6 +137,13 @@ class IndexRow:
 def size(path: Path) -> int:
     """Characters in a file, with CRLF counted as one character."""
     return len(path.read_text(encoding="utf-8").replace("\r\n", "\n"))
+
+
+def entry_size(path: Path) -> int:
+    """Characters in an entry without its status line, which grows with each status change."""
+    text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
+    line = STATUS_LINE.search(text)
+    return len(text) - (len(line.group(0)) if line else 0)
 
 
 def table_rows(path: Path) -> tuple[list[IndexRow], list[str]]:
@@ -302,7 +311,7 @@ def sizes(root: Path) -> list[tuple[str, int, int]]:
         found.append((OPEN_WORK, size(log_dir / OPEN_WORK), OPEN_WORK_LIMIT))
     for name, path in entry_files(log_dir).items():
         if not unlimited(name, path):
-            found.append((name, size(path), ENTRY_LIMIT))
+            found.append((name, entry_size(path), ENTRY_LIMIT))
     found.append(
         ("read path (README.md, open-work.md and Active entries)", read_path_size(root), READ_PATH_LIMIT)
     )
