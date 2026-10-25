@@ -20,3 +20,14 @@ task. Delete an item when its work is done. The change that closes an item recor
   rule with no exception mechanism needs a change in this log first. When a rule is written here,
   state whether it allows a site exception and what the site entry must hold. The first known
   case is an application that must mount the Docker socket.
+- **Write the storage entry for Docker on an LXC.** [s3xt](s3xt-storage-layout-and-bind-mounted-state.md)
+  covers each Docker host, and [msam](msam-docker-host-vm-disks.md) covers a VM only. An LXC entry
+  needs the answers to these questions first: which Docker hosts are LXCs, and are they unprivileged;
+  the container storage of each node (ZFS subvol, LVM-thin or directory); whether state comes from
+  the node or a NAS through a bind mount or NFS, and who backs it up; and whether AppArmor
+  `unconfined` is acceptable. Known rules: each mount point sets `backup=1` (vzdump leaves mount
+  points out by default); no state on a host bind mount; `nesting=1`, with `keyctl=1` when
+  unprivileged; `pct fstrim` and `pct resize`; overlayfs on ZFS needs OpenZFS 2.2 or later.
+  [bqxn](bqxn-debian-hosts-and-the-base-role.md) rule 4 and [xq9a](xq9a-guest-backups-by-the-hypervisor.md)
+  rule 2 assume a VM (`qemu-guest-agent`). The platform-classes entry of the site roadmap (N10)
+  decides them for an LXC.

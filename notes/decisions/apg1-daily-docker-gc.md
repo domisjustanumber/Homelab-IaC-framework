@@ -32,42 +32,63 @@ IOSchedulingClass=idle
 6. **Manual reaping.** To remove the named volumes of an old project, run
    `docker volume prune -af --filter "label=com.docker.compose.project=<old>"` by hand, for that
    project only.
+7. **The retention is not a rollback promise.** What `until=` measures depends on the image store
+   (Consequences). Do not plan a rollback on an image that the GC can remove.
 
 ## Reason
 
-- `docker system prune --filter until=` applies to containers, images and networks. Build cache is
-  always eligible.
+- `docker system prune --filter until=` applies to stopped containers, unused networks, unused
+  images and the build cache. `prune -a` never removes an image that a container uses.
 - `docker volume prune` has no `until=` filter. Without `-a`, it removes only anonymous volumes that
   no container uses. With `-a`, named volumes are eligible too, so a stack that is stopped at the
-  time of the run loses its named volumes.
-- A systemd unit is observable (`systemctl list-timers`, `journalctl -u docker-gc`), and systemd is
-  already on each host.
+  time of the run loses its named volumes. A `dangling=true` filter has the same effect.
+- A systemd unit is observable (`systemctl list-timers`, `journalctl -u docker-gc`), it reports a
+  failure by its exit status, and systemd is already on each host. No container gets access to the
+  Docker API for the GC.
 
 ## Consequences
 
-- Image and build-cache growth has a limit, and no application data is at risk.
+- Image and build-cache growth has a limit, and no named volume or bind-mounted state is at risk.
 - Abandoned named volumes stay until a person removes them.
-- `until=` compares the creation time of an image, which is its build time, not the time of its
-  pull or its last use. A superseded image is normally older than the retention, so it goes at the
-  next run. The retention is not a rollback window.
-- A stopped stack loses its images at the next run.
+- **Image age.** The hosts use the containerd image store, the default of a fresh Docker Engine 29
+  install ([s3xt](s3xt-storage-layout-and-bind-mounted-state.md)). There, `until=` compares the time
+  of the local image record. When a pull replaces a tag, the old image becomes a dangling record
+  with the time of that pull. An image that Watchtower replaced therefore stays for about the
+  retention, plus up to one day. With the older graph-driver store, `until=` compares the build
+  time, and a superseded image normally goes at the next run.
+- A stack that is stopped at the time of a run loses its containers that were created before the
+  retention, their anonymous volumes and then its unused images. Its bind-mounted state stays.
 
 ## Evidence
 
-- `docker system prune` and `docker volume prune` filter behaviour:
+- `docker system prune` and `docker volume prune`:
   [system prune](https://docs.docker.com/reference/cli/docker/system/prune/),
   [volume prune](https://docs.docker.com/reference/cli/docker/volume/prune/).
+- The containerd store is the default for fresh installs from Docker Engine 29
+  ([release notes](https://docs.docker.com/engine/release-notes/29/)).
+- On the containerd store, the `until` filter compares the `CreatedAt` of the containerd image
+  record ([moby `daemon/containerd/image_list.go`](https://github.com/moby/moby/blob/b711d21792db6db488de976eb3c4a653c92c3bc3/daemon/containerd/image_list.go)).
+  A pull that replaces a tag keeps the old image as a dangling record
+  ([`image_pull.go`](https://github.com/moby/moby/blob/b711d21792db6db488de976eb3c4a653c92c3bc3/daemon/containerd/image_pull.go#L129-L137)).
+- The CLI passes the same filter to the build-cache prune
+  ([docker/cli `prune.go`](https://github.com/docker/cli/blob/6d274590f2f63276a54da8adf475a455d21c1fdd/cli/command/system/prune.go#L98-L107)).
+- Research of 2026-10-25 on the `clockworksoul/docker-gc-cron` image: its wrapped script
+  (`spotify/docker-gc`) is archived, the last published image ships Docker client 1.12, and its
+  volume clean-up removes each dangling volume, named volumes included.
 
 ## Alternatives rejected
 
 - **`docker volume prune -af` each night.** It deletes the named volumes of stopped stacks, and no
   age filter exists.
 - **`-af` with a protection label.** Each volume must opt in, or its data is at risk.
-- **A GC container (`clockworksoul/docker-gc-cron`).** One more container and one more updater.
+- **A GC container (`clockworksoul/docker-gc-cron`).** Not maintained, it needs delete rights on the
+  Docker API, it hides its errors, and its volume clean-up removes named volumes.
+- **A script that keeps the last N images of each repository.** The CLI cannot express it. Pinned
+  tags can be pulled again, so the window has little value.
 - **No pruning.** The disk of a small VM fills.
 
 ## Not repeated
 
-- Do not add `-a` to the volume prune.
+- Do not add `-a` to the volume prune, and do not prune volumes with `dangling=true`.
 - Do not join the two commands with `&&` in one `ExecStart=`.
-- Do not count on `until=` to keep a superseded image for a rollback.
+- Do not count on the retention as a rollback window. It depends on the image store.

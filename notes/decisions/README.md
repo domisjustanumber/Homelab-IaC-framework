@@ -39,7 +39,8 @@ These entries wait for a decision of the user. Section is the section or area of
 | [eq0z](eq0z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | `updates` | proposed |
 | [gee3](gee3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | `mail` | proposed |
 | [apg1](apg1-daily-docker-gc.md) | Daily Docker GC with anonymous-only volume pruning | `docker_gc` | proposed |
-| [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) | Three VM disks for a Docker host; the mounts are enforced; all persistent state is bind-mounted | `storage` | proposed |
+| [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | `storage` | proposed |
+| [msam](msam-docker-host-vm-disks.md) | A Docker host VM has three disks, ext4 by UUID, and all three are in the backup | `storage` | proposed |
 | [xq9a](xq9a-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | `backups` | proposed |
 | [ntk9](ntk9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | `roles` | proposed |
 
