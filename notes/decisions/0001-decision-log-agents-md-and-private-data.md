@@ -29,7 +29,8 @@
 8. **Log rules.** The [Rules](README.md#rules) of the index apply: allowed edits only, complete
    supersession, status forms, Proposed entries off the read path, absorption, `done`, consolidation,
    random IDs, permalinks and the size limits. `tools/check_decision_log.py` checks the index, the IDs
-   and the limits. The site log uses the same rules, with its own copy of the rules and the tools.
+   and the limits. The site log must use the same rules, with its own copy of the rules and the
+   tools.
 9. **Private data.** [`AGENTS.md`](../../AGENTS.md#8-private-data) gives the rule. This repo becomes
    public, so the rule has no exemption: no folder may hold host values.
    `tools/check_private_data.py` checks the tracked files. The pre-commit hook and the workflow
