@@ -1,0 +1,2 @@
+# Everything here runs on Linux (the target and the lint container): LF only.
+* text=auto eol=lf
