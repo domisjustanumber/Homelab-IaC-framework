@@ -34,6 +34,7 @@ These entries wait for a decision of the user. Section is the section or area of
 | [0003](0003-controller-pushes-stacks.md) | The controller pushes Compose stacks; hosts hold no Git credentials | `stacks` | proposed |
 | [0004](0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
 | [0005](0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
+| [b7zv](b7zv-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 or later | `licence` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
 `evidence; used by XXXX` or `done` are in [historical.md](historical.md).
