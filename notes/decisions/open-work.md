@@ -22,3 +22,8 @@ task. Delete an item when its work is done. The change that closes an item recor
   site log still uses its older process: sequential numbers, a Deferred table and the template in its
   index. A site entry must supersede site 0046 in full and copy the process of this log. Until then,
   a change of the rules here has no matching site change to wait for.
+- **Site exceptions to framework rules.** The user decided (2026-10-25): this log decides which of
+  its rules allow a site exception, and how. A site entry records each use of that mechanism. A
+  rule with no exception mechanism needs a change in this log first. When a rule is written here,
+  state whether it allows a site exception and what the site entry must hold. The first known
+  case is an application that must mount the Docker socket.
