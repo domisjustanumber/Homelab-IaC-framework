@@ -17,7 +17,8 @@ task. Delete an item when its work is done. The change that closes an item recor
 - **Decide the open parts of 0003 before it is accepted:** one Compose project per host or several,
   how public and private stacks are composed and what the push copies, and whether the Compose
   files are renamed for Dependabot.
-- **Add the doc checks.** Add `tools/check_decision_log.py`, `tools/check_links.py` and
-  `tools/check_private_data.py` with their tests. Every entry of this log has the 6,000-character
-  limit, so the decision-log check limits entries from 0001. Until then, run the site copies with
-  this repository as the root, and count the entry size by hand.
+- **The site log adopts the same process.** [0001](0001-decision-log-agents-md-and-private-data.md)
+  states that the site log uses the same rules, with its own copy of the rules and the tools. The
+  site log still uses its older process: sequential numbers, a Deferred table and the template in its
+  index. A site entry must supersede site 0046 in full and copy the process of this log. Until then,
+  a change of the rules here has no matching site change to wait for.
