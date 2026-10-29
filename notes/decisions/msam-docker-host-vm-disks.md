@@ -19,8 +19,7 @@ This entry restates the VM rules of site 0034. The storage rules for each Docker
    `qm resize` and then `resize2fs`. When a disk has a partition table, `growpart` comes before
    `resize2fs`.
 3. **All three disks in the backup.** The backup job of the VM includes each disk. Do not set
-   `backup=0` on the churn disk until the stateful services are pinned by digest and a restore
-   runbook holds the image updates for one cooldown.
+   `backup=0` on the churn disk.
 
 ## Reason
 
@@ -64,4 +63,4 @@ This entry restates the VM rules of site 0034. The storage rules for each Docker
 
 ## Not repeated
 
-- Do not exclude the churn disk from the backup while moving tags are in use.
+- Do not exclude the churn disk from the backup. To change this rule, write a new entry.
