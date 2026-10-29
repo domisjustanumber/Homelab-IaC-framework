@@ -20,8 +20,8 @@ This repository never holds a site value.
 | `decisions/` | Decision log ([`README.md`](decisions/README.md)) and its open work ([`open-work.md`](decisions/open-work.md)) |
 | `roles/` | Generic, host-agnostic Ansible roles |
 | `ansible.cfg`, `requirements.yml` | The Ansible config of the lint run, and the pinned collections |
-| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint container: `lint.sh` and `lint/`. |
-| `pyproject.toml` | The dev tools of the doc checks only (`pytest`, `pre-commit`) |
+| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint suite: `lint.sh`, and the lint container in `lint/`. |
+| `pyproject.toml`, `uv.lock` | The dev tools (`pytest`, `pre-commit`, `yamllint`, `shellcheck`) and the `ansible` group of the lint container and CI |
 | `.github/workflows/` | The doc checks, the lint suite and the secret scan in CI |
 | `plans/` | A local working folder. Git ignores it. |
 
@@ -47,18 +47,33 @@ Run it again in each clone after `.pre-commit-config.yaml` changes.
 Use `uv run` for project commands.
 Do not depend on an activated virtual environment.
 
-Ansible, `ansible-lint`, `yamllint` and `shellcheck` do not run natively on a Windows controller.
-Run them in the pinned lint container:
+Do not build a Docker image to run a tool that runs on Windows.
+Run it from the uv venv with `uv run`.
+The doc checks, `yamllint` and `shellcheck` run from the uv venv
+([ADR-NXK2](decisions/NXK2-current-decision-log-kit.md)).
+Ansible runs only on Linux.
+Do not run `uv run ansible-*` on the Windows controller.
+On the Windows controller, the Ansible checks run in the pinned lint container:
 
 ```sh
-tools/lint.sh                      # yamllint, ansible-lint, the role checks and shellcheck
+tools/lint.sh                      # yamllint and shellcheck, then ansible-lint and the role checks
 tools/lint.sh ansible-lint roles/base
 ```
 
-The image (`tools/lint/Dockerfile`) pins ansible-core, the linters and the collections from
+`tools/lint.sh` runs `yamllint` and `shellcheck` from the uv venv first.
+Then it runs the Ansible checks in the container.
+If Docker is not running, `tools/lint.sh` stops with a message.
+Then ask the user to start Docker.
+`tools/lint.sh <cmd> [args]` runs one command in the container.
+The `ansible` dependency group of `pyproject.toml` pins ansible-core and `ansible-lint`, in
+`uv.lock`.
+A plain `uv sync` does not install that group.
+The image (`tools/lint/Dockerfile`) installs the locked `ansible` group and the collections from
 `requirements.yml`.
-When either changes, bump `IMAGE` in `tools/lint.sh`.
+When the `ansible` group in `uv.lock` or `requirements.yml` changes, bump `IMAGE` in
+`tools/lint.sh`.
 A site builds the same image from its `framework/` submodule.
+In CI, `.github/workflows/lint.yml` runs the same checks from the uv venv, with no Docker.
 
 Run `uv run pytest` and `tools/lint.sh`.
 These checks must pass.

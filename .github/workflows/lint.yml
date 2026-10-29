@@ -10,14 +10,26 @@ name: Lint
 permissions:
   contents: read
 
+# No Docker: a GitHub-hosted Linux runner runs Ansible from the uv venv (ADR-NXK2).
 jobs:
   lint:
     name: yamllint, ansible-lint, role checks and shellcheck
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
     steps:
       - uses: actions/checkout@v5
-      - name: Build the lint image
-        run: docker build -f tools/lint/Dockerfile -t homelab-lint:1 .
-      - name: Run the lint suite
-        run: docker run --rm -v "$PWD:/repo" -w /repo homelab-lint:1 sh tools/lint/check.sh
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: "3.13"
+      - name: Install the dev and ansible groups from uv.lock
+        run: uv sync --frozen --group ansible
+      - name: Install the pinned collections
+        run: uv run --frozen --group ansible ansible-galaxy collection install -r requirements.yml -p collections
+      - name: yamllint
+        run: uv run --frozen yamllint .
+      - name: shellcheck
+        run: git ls-files -z '*.sh' | xargs -0 uv run --frozen shellcheck
+      - name: Ansible checks
+        run: uv run --frozen --group ansible sh tools/lint/check.sh

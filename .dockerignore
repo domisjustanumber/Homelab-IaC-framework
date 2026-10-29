@@ -1,3 +1,5 @@
-# The lint image build context needs only the collection pins.
+# The lint image build context needs only the collection pins and the uv lock.
 *
 !requirements.yml
+!pyproject.toml
+!uv.lock
