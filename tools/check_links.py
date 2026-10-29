@@ -5,13 +5,17 @@ except `-` and `_`; each space becomes `-`; a repeated heading gets `-1`,
 `-2`, ... appended. Links inside fenced code blocks and inline code are
 skipped.
 
-In `AGENTS.md`, `notes/` and `.claude/skills/`, a GitHub `blob`, `tree` or
-`commit` link must pin a full 40-character SHA (decision 0001).
+In each `AGENTS.md`, `notes/`, `.claude/skills/` and folder named `decisions`, a
+GitHub `blob`, `tree` or `commit` link must pin a full 40-character SHA
+(decision 0001).
 """
 
 from __future__ import annotations
 
+import os
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
@@ -26,7 +30,7 @@ _GITHUB_REF = re.compile(
     r"^https?://github\.com/[^/]+/[^/]+/(?:blob|tree|commit)/([^/#?]+)", re.IGNORECASE
 )
 _FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
-_PINNED_SCOPES = ("AGENTS.md", "notes/", ".claude/skills/")
+_PINNED_SCOPES = ("notes/", ".claude/skills/")
 
 
 def _strip_inline_code(text: str) -> str:
@@ -93,7 +97,11 @@ def links(path: Path) -> list[tuple[int, str]]:
 def needs_pinned_links(path: Path, root: Path) -> bool:
     """True when GitHub links in `path` must pin a full SHA."""
     rel = path.relative_to(root).as_posix()
-    return any(rel == scope or rel.startswith(scope) for scope in _PINNED_SCOPES)
+    return (
+        rel.rsplit("/", 1)[-1] == "AGENTS.md"
+        or any(rel.startswith(scope) for scope in _PINNED_SCOPES)
+        or "decisions" in rel.split("/")[:-1]
+    )
 
 
 def check_file(path: Path, root: Path) -> list[str]:
@@ -122,12 +130,43 @@ def check_file(path: Path, root: Path) -> list[str]:
     return errors
 
 
+def repo_files(root: Path) -> list[str]:
+    """The POSIX paths under `root` of the tracked files, and of the new files that git keeps.
+
+    Git ignores node_modules/, build output and the other folders in each `.gitignore`. Without git,
+    or when `root` is not in a git repo, the tool walks the tree and skips only hidden folders.
+    """
+    git = shutil.which("git")
+    if git is not None:
+        done = subprocess.run(  # noqa: S603
+            [git, "-C", str(root), "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            capture_output=True,
+            check=False,
+        )
+        if done.returncode == 0:
+            return sorted({n for n in done.stdout.decode("utf-8").split("\0") if n})
+    names = []
+    for folder, dirs, found in os.walk(root):
+        # .git and .venv hold no doc. .claude/ holds the skills.
+        dirs[:] = sorted(d for d in dirs if d == ".claude" or not d.startswith("."))
+        names.extend((Path(folder) / n).relative_to(root).as_posix() for n in sorted(found))
+    return names
+
+
 def markdown_files(root: Path) -> list[Path]:
     """Return the tracked docs the link check covers."""
-    files = [root / "AGENTS.md"] if (root / "AGENTS.md").exists() else []
-    for folder in ("docs", "notes", ".claude/skills", "roles"):
-        if (root / folder).is_dir():
-            files.extend(sorted((root / folder).rglob("*.md")))
+    files = []
+    for rel in repo_files(root):
+        parts = rel.split("/")
+        if not rel.endswith(".md") or not (root / rel).is_file():
+            continue
+        if rel.startswith(("docs/", "notes/", "roles/", ".claude/skills/")):
+            files.append(root / rel)
+        # Hidden folders and the local plans/ folder hold no tracked AGENTS.md or decision log.
+        elif not any(p.startswith(".") or p == "plans" for p in parts[:-1]) and (
+            parts[-1] == "AGENTS.md" or "decisions" in parts[:-1]
+        ):
+            files.append(root / rel)
     return files
 
 

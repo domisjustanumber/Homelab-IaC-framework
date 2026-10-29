@@ -1,5 +1,7 @@
-"""Every relative link in `AGENTS.md`, `docs/`, `notes/` and `.claude/skills/` resolves."""
+"""Every relative link in each `AGENTS.md`, `decisions/`, `docs/`, `notes/`, `roles/` and `.claude/skills/` resolves."""
 
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -91,3 +93,44 @@ def test_github_branch_links_outside_the_pinned_scope_pass(tmp_path: Path) -> No
     doc = tmp_path / "docs" / "doc.md"
     doc.write_text("[b](https://github.com/o/r/tree/master/spec)\n", encoding="utf-8")
     assert check_file(doc, tmp_path) == []
+
+
+def test_nested_agents_files_are_checked_and_pinned(tmp_path: Path) -> None:
+    for folder in ("pkg/a/b", ".venv/lib", "plans"):
+        (tmp_path / folder).mkdir(parents=True)
+        (tmp_path / folder / "AGENTS.md").write_text(
+            "[b](https://github.com/o/r/blob/main/x.py)\n", encoding="utf-8"
+        )
+    doc = tmp_path / "pkg" / "a" / "b" / "AGENTS.md"
+    assert markdown_files(tmp_path) == [doc]
+    assert check_file(doc, tmp_path) == [
+        "pkg/a/b/AGENTS.md:1: GitHub link must pin a full SHA: https://github.com/o/r/blob/main/x.py"
+    ]
+
+
+def test_decision_logs_in_any_folder_are_checked_and_pinned(tmp_path: Path) -> None:
+    for folder in ("decisions", "m/decisions", ".hidden/decisions", "plans/decisions", "decisions/plans"):
+        (tmp_path / folder).mkdir(parents=True)
+        (tmp_path / folder / "x.md").write_text(
+            "[b](https://github.com/o/r/blob/main/x.py)\n", encoding="utf-8"
+        )
+    docs = [tmp_path / "decisions" / "x.md", tmp_path / "m" / "decisions" / "x.md"]
+    assert markdown_files(tmp_path) == docs
+    for doc in docs:
+        rel = doc.relative_to(tmp_path).as_posix()
+        assert check_file(doc, tmp_path) == [
+            f"{rel}:1: GitHub link must pin a full SHA: https://github.com/o/r/blob/main/x.py"
+        ]
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="git is not on the PATH")
+def test_files_that_git_ignores_are_skipped(tmp_path: Path) -> None:
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)  # noqa: S603, S607
+    (tmp_path / ".gitignore").write_text("node_modules/\n", encoding="utf-8")
+    folders = ("ui/decisions", "ui/node_modules/pkg", "ui/node_modules/pkg/decisions", "docs/node_modules/pkg")
+    for folder in folders:
+        (tmp_path / folder).mkdir(parents=True)
+        for name in ("AGENTS.md", "x.md"):
+            (tmp_path / folder / name).write_text("[gone](gone.md)\n", encoding="utf-8")
+    log = tmp_path / "ui" / "decisions"
+    assert markdown_files(tmp_path) == [log / "AGENTS.md", log / "x.md"]

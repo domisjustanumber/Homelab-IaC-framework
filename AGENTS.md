@@ -20,7 +20,7 @@ This repository never holds a site value.
 | `notes/decisions/` | Decision log ([`README.md`](notes/decisions/README.md)) and its open work ([`open-work.md`](notes/decisions/open-work.md)) |
 | `roles/` | Generic, host-agnostic Ansible roles |
 | `ansible.cfg`, `requirements.yml` | The Ansible config of the lint run, and the pinned collections |
-| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py` and `check_private_data.py`. Their tests are in `tools/tests/`. The lint container: `lint.sh` and `lint/`. |
+| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint container: `lint.sh` and `lint/`. |
 | `pyproject.toml` | The dev tools of the doc checks only (`pytest`, `pre-commit`) |
 | `.github/workflows/` | The doc checks, the lint suite and the secret scan in CI |
 | `plans/` | A local working folder. Git ignores it. |
@@ -42,7 +42,7 @@ When you add a skill, add a row to this table.
 
 Run `uv sync`.
 Then run `uv run pre-commit install` once in the clone ([section 8](#8-private-data)).
-It installs the pre-commit hooks and the pre-push hook.
+It installs the pre-commit hooks, the commit-msg hook and the pre-push hook.
 Run it again in each clone after `.pre-commit-config.yaml` changes.
 Use `uv run` for project commands.
 Do not depend on an activated virtual environment.
@@ -63,13 +63,14 @@ A site builds the same image from its `framework/` submodule.
 Run `uv run pytest` and `tools/lint.sh`.
 These checks must pass.
 Run `uv run pytest tools/tests` to run only the doc checks.
-The doc checks test the decision log, the relative links and the private-data rule.
+The doc checks test the decision log, the relative links, the private-data rule and the
+AI-attribution check.
 Report each new test failure to the user.
 Fix the failures of one root cause in one PR.
 
 ## 4. Project Rules
 
-Each role follows [ntk9](notes/decisions/ntk9-generic-roles-and-host-values.md).
+Each role follows [ADR-ntk9](notes/decisions/ntk9-generic-roles-and-host-values.md).
 A role holds no host value.
 A role reads each value from the inventory of the site or from its `defaults/main.yml`.
 Each role lists its required values and its opt-in values in `vars/main.yml`.
@@ -92,7 +93,7 @@ decision.
 Add one entry for each new decision or measurement.
 Write a new entry as `proposed`.
 Only the user changes an entry to `accepted` or `rejected`.
-An entry has a random ID of 4 characters, for example `k7m2`.
+An entry has a random upper-case ID of 4 characters, for example `K7M2`.
 Before you add an entry, run `git fetch` when you can.
 Then run `uv run python tools/check_decision_log.py --new`.
 Give the entry the ID of the `new:` line.
@@ -107,9 +108,10 @@ Do not rewrite the body of an entry that is not `proposed`.
 Four edits are allowed: a link or anchor repair, a typo fix that keeps the meaning, the redaction of
 private data, and a change of ID with the repair of its citations.
 Each of these edits adds an `_Edited_` line with the date and the PR.
-Until the repository has a remote, name the entry that caused the edit in place of the PR.
-To change a decision, add a new entry. It restates the rules that stay and supersedes the old entry
-in full.
+When a change has no PR, name the entry that caused the edit in place of the PR.
+To change a decision, add a new entry. It restates the rules that stay, in full or by a link to a
+heading that states the rule, and supersedes the old entry in full.
+A later change under that heading does not supersede the linking entry.
 Do not supersede a part of an entry.
 Keep the log inside its limits. `uv run pytest tools/tests` checks them.
 Cite tracked files and decision entries with relative links.
@@ -117,11 +119,14 @@ Cite a commit, or the code of another public repository, with a GitHub permalink
 The permalink must pin a full SHA on the default branch of that repository.
 Do not put dated status lines in this file. Put them in the open work or in an entry.
 Do not cite or link to `plans/`.
-In this repository, `ADR-XXXX` and a bare ID are entries of this log.
-Write the repository name before an entry ID of another repository, for example `site 0013`.
+Cite an entry of this repository as `ADR-<ID>`. Put the prefix in the link text.
+Write the ID in upper case.
+An ID without a repository name is an entry of this repository.
 Cite an entry of the site log as `site XXXX`, with no link.
 Never link to the site repository, and never name its location.
 Restate a site rule here only when framework code or framework documents cite it.
+Do not use the prefix in a file name, an entry heading, an index row, a status line or a YAML value.
+End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
 Cite a provisional entry of another repository by the repository name, the PR number and the slug.
 Do not import a file, a test or a tool from another repository.
 
@@ -129,9 +134,12 @@ Do not import a file, a test or a tool from another repository.
 
 - `plans/` is a local working folder. Git ignores it. Do not commit it (decision
   [0001](notes/decisions/0001-decision-log-agents-md-and-private-data.md)).
-- Do not push to a git remote without the approval of the user.
-- Ask the user before any other action that is visible outside this machine, for example a PR, a
-  PR comment, a release or a published image.
+- Do not push to a git remote without the approval of the user. One approval for a PR covers its
+  push, its draft PR and its description.
+- Ask the user before any other action that is visible outside this machine, for example a PR
+  comment, a later change to a PR description, a change of a draft PR to ready, a release or a
+  published image. A force-push is a new push. It needs its own approval.
+- Do not add AI attribution, for example a `Co-Authored-By:` trailer, to a commit or a PR.
 - Open each PR against `main`.
 - Put one kind of change in each PR: code, docs or CI.
 - Run each workflow on a GitHub-hosted runner. Never use `self-hosted`: a fork PR of a public
@@ -163,10 +171,17 @@ Give a measurement as a summary with its tool and its version.
 Text from `plans/` must obey these rules before it goes into a tracked file.
 If you find private data in a tracked file, remove it with a redaction edit.
 Then tell the user, because git history keeps the data.
+Also revoke a leaked credential.
 
 `uv run pytest tools/tests` runs `tools/check_private_data.py`.
 To also block a hostname or a user name, put it in the file `.private-terms` in the repository root.
 Git ignores that file. Do not commit it.
 The pre-commit hook runs `gitleaks` and the private-data check.
 The pre-push hook runs the collision check of the decision-log IDs.
+The commit-msg hook runs `tools/check_ai_attribution.py`. It warns about AI attribution
+([section 6](#6-git-rules)). It does not stop the commit.
+If you are an AI agent and you see this warning, tell the user.
 `.github/workflows/secrets.yml` runs `gitleaks` on each push and PR.
+`.gitleaks.toml` holds the reviewed false positives.
+Turn on secret scanning and push protection for a private repository on the day that it becomes
+public.
