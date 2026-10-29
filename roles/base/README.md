@@ -4,9 +4,9 @@ This role configures each Debian 13 host. It has no feature switch.
 It installs the base packages and the QEMU guest agent.
 It configures the admin user, sshd, chrony, the journald size limit and the hardening sysctls.
 
-Decisions: [bqxn](../../notes/decisions/bqxn-debian-hosts-and-the-base-role.md) (the role),
-[ntk9](../../notes/decisions/ntk9-generic-roles-and-host-values.md) (values) and
-[xq9a](../../notes/decisions/xq9a-guest-backups-by-the-hypervisor.md) (the guest agent).
+Decisions: [BQXN](../../decisions/BQXN-debian-hosts-and-the-base-role.md) (the role),
+[NTK9](../../decisions/NTK9-generic-roles-and-host-values.md) (values) and
+[XQ9A](../../decisions/XQ9A-guest-backups-by-the-hypervisor.md) (the guest agent).
 
 ## Inventory values
 

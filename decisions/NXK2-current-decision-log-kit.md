@@ -2,7 +2,7 @@
 
 **Status:** proposed, 2026-10-29 (agent).
 
-Supersedes [0001](0001-decision-log-agents-md-and-private-data.md) in full. Its mirror is site EB4N.
+Supersedes [ADR-0001](0001-decision-log-agents-md-and-private-data.md) in full. Its mirror is site EB4N.
 
 ## Decision
 
@@ -17,14 +17,14 @@ These rules of 0001 stay:
    restates those values and supersedes the site entry instead.
 3. **Status.** An agent writes a new entry as `proposed`. Only the user changes it to `accepted` or
    `rejected`.
-4. **One instructions file.** [`AGENTS.md`](../../AGENTS.md) is the single instructions file for
+4. **One instructions file.** [`AGENTS.md`](../AGENTS.md) is the single instructions file for
    coding agents. `CLAUDE.md` only imports it: its full content is `@AGENTS.md`. Agent procedures
    are skills in `.claude/skills/`. Git tracks that folder and ignores the rest of `.claude/`.
 5. **`plans/`.** `plans/` is a local working folder. Git ignores it. A tracked file does not link to
    `plans/` and does not cite its sections, item numbers or local PR labels.
-6. **Private data.** [`AGENTS.md` section 8](../../AGENTS.md#8-private-data) states the rule. It has
+6. **Private data.** [`AGENTS.md` section 8](../AGENTS.md#8-private-data) states the rule. It has
    no exemption: no folder may hold host values.
-7. **Runners.** [`AGENTS.md` section 6](../../AGENTS.md#6-git-rules) states the rule: each workflow
+7. **Runners.** [`AGENTS.md` section 6](../AGENTS.md#6-git-rules) states the rule: each workflow
    runs on a GitHub-hosted runner.
 8. **Log rules.** The [Rules](README.md#rules) of the index and [template.md](template.md) state
    the other rules. The site log uses the same rules, with its own copy of the rules and the tools.
@@ -35,13 +35,14 @@ These rules change:
    rule, `recorded again` for a changed proposal, `absorbed` to `superseded by`, the `XXXX` of a
    status must be a decided entry, the tool and script rule, and the PR citation of a commit that is
    not on `main` yet. When a change has no PR, the edit line names the entry that caused it.
-10. **Folder.** The log moves from `notes/decisions/` to `decisions/`, with its history. A script of
-    an entry goes in `decisions/scripts/`. `OLD_LOG_DIRS` in `tools/check_decision_log.py` names
-    the old folder, so `--new` still reads it on old branches.
+10. **Folder.** The log moves from `notes/` to `decisions/` at the repo root, with its history. A
+    script of an entry goes in `decisions/scripts/`. `OLD_LOG_DIRS` in `tools/check_decision_log.py`
+    names the old folder, so `--new` still reads it on old branches.
 11. **Upper-case IDs.** A new ID uses upper-case Crockford base32. The ten lower-case IDs of this log
     change to upper case. IDs that differ only in case are one ID.
-12. **Citations.** Cite an entry as `ADR-<ID>`, with the prefix in the link text. A commit subject
-    that adds or changes an entry ends with `(ADR-<ID>)`. The `Refs ADR-NNNN` form is not used.
+12. **Citations.** Cite an entry as a Markdown link with `ADR-<ID>` as the link text, in each text
+    that an agent writes. A commit subject that adds or changes an entry ends with `(ADR-<ID>)`. A
+    commit body writes `ADR-<ID>` with no link. The `Refs ADR-NNNN` form is not used.
 13. **No AI attribution.** A commit or a PR has no AI attribution, for example a `Co-Authored-By:`
     trailer. `tools/check_ai_attribution.py` runs in the commit-msg hook. It warns and does not stop
     the commit.
@@ -75,12 +76,8 @@ These rules change:
 - Acceptance changes the status of 0001 to `superseded by NXK2`, and moves its row to
   [historical.md](historical.md). Then the citations of 0001 in `AGENTS.md` change to this entry.
 - The site log needs a matching change (site EB4N).
-- A branch made before the move has its entries in `notes/decisions/`.
+- A branch made before the move has its entries in the old folder under `notes/`.
 - A change of the `ansible` group in `uv.lock` or of `requirements.yml` needs a new `IMAGE` tag.
-
-## Evidence
-
-- The user decided on 2026-10-29 to adopt the current version of the decision-log kit.
 
 ## Alternatives rejected
 
@@ -89,7 +86,6 @@ These rules change:
 
 ## Not repeated
 
-- Do not link to the site repository. Write `site XXXX`.
 - Do not add rules to `CLAUDE.md`. Add them to `AGENTS.md`.
 - Do not commit `.private-terms`. A tracked list publishes the terms.
 - Do not run Ansible natively on the Windows controller. It fails at start.

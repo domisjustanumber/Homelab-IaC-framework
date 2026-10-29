@@ -4,7 +4,7 @@
 
 ## Decision
 
-1. **Decision log.** This repo keeps its decisions in `notes/decisions/`. The [index](README.md) has
+1. **Decision log.** This repo keeps its decisions in `decisions/`. The [index](README.md) has
    the Active and Proposed tables and the rules. [`historical.md`](historical.md) has the
    Historical table. [`template.md`](template.md) has the entry template.
    [`open-work.md`](open-work.md) has the open work. A decision that code or a document refers to
@@ -20,7 +20,7 @@
    values and supersedes the site entry instead. Then the entry of this log supersedes nothing.
 5. **Status.** An agent writes a new entry as `proposed`. Only the user changes it to `accepted` or
    `rejected`.
-6. **One instructions file.** [`AGENTS.md`](../../AGENTS.md) is the single instructions file for
+6. **One instructions file.** [`AGENTS.md`](../AGENTS.md) is the single instructions file for
    coding agents. `CLAUDE.md` only imports it: its full content is `@AGENTS.md`. Do not put
    instructions in `CLAUDE.md` or in a second instructions file. Agent procedures are skills in
    `.claude/skills/`. Git tracks that folder and ignores the rest of `.claude/`.
@@ -31,7 +31,7 @@
    random IDs, permalinks and the size limits. `tools/check_decision_log.py` checks the index, the IDs
    and the limits. The site log must use the same rules, with its own copy of the rules and the
    tools.
-9. **Private data.** [`AGENTS.md`](../../AGENTS.md#8-private-data) gives the rule. This repo becomes
+9. **Private data.** [`AGENTS.md`](../AGENTS.md#8-private-data) gives the rule. This repo becomes
    public, so the rule has no exemption: no folder may hold host values.
    `tools/check_private_data.py` checks the tracked files. The pre-commit hook and the workflow
    `.github/workflows/secrets.yml` run `gitleaks`. `.private-terms` is a local, untracked list of
@@ -85,3 +85,5 @@
 - Do not link to `plans/` from a tracked file. Link to a decision entry.
 - Do not add rules to `CLAUDE.md`. Add them to `AGENTS.md`.
 - Do not commit `.private-terms`. A tracked list publishes the terms.
+
+_Edited 2026-10-29 (ADR-NXK2): link repair._

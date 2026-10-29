@@ -17,7 +17,7 @@ This repository never holds a site value.
 |---|---|
 | `AGENTS.md` | The single instructions file for coding agents |
 | `CLAUDE.md` | Imports this file. It has no other content. |
-| `notes/decisions/` | Decision log ([`README.md`](notes/decisions/README.md)) and its open work ([`open-work.md`](notes/decisions/open-work.md)) |
+| `decisions/` | Decision log ([`README.md`](decisions/README.md)) and its open work ([`open-work.md`](decisions/open-work.md)) |
 | `roles/` | Generic, host-agnostic Ansible roles |
 | `ansible.cfg`, `requirements.yml` | The Ansible config of the lint run, and the pinned collections |
 | `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint container: `lint.sh` and `lint/`. |
@@ -70,7 +70,7 @@ Fix the failures of one root cause in one PR.
 
 ## 4. Project Rules
 
-Each role follows [ADR-ntk9](notes/decisions/ntk9-generic-roles-and-host-values.md).
+Each role follows [ADR-NTK9](decisions/NTK9-generic-roles-and-host-values.md).
 A role holds no host value.
 A role reads each value from the inventory of the site or from its `defaults/main.yml`.
 Each role lists its required values and its opt-in values in `vars/main.yml`.
@@ -82,13 +82,13 @@ Do not change code that your task does not need.
 
 ## 5. Decision Log
 
-Read [`notes/decisions/README.md`](notes/decisions/README.md) and
-[`notes/decisions/open-work.md`](notes/decisions/open-work.md) before you change a role, a
+Read [`decisions/README.md`](decisions/README.md) and
+[`decisions/open-work.md`](decisions/open-work.md) before you change a role, a
 playbook, a module, a stack or these instructions.
 The log records decisions and the evidence behind them.
 Then read the Active entries of the index that apply to your task.
 Read a Proposed entry only for work in its section, or when a skill tells you to.
-Read an entry of [`historical.md`](notes/decisions/historical.md) only to find the reason for a
+Read an entry of [`historical.md`](decisions/historical.md) only to find the reason for a
 decision.
 Add one entry for each new decision or measurement.
 Write a new entry as `proposed`.
@@ -101,7 +101,7 @@ Create the entry file immediately.
 Add its index row at the end of the table for its status, in the same PR.
 The pre-push hook runs `uv run python tools/check_decision_log.py --collisions`.
 It stops the push when an entry of this tree must change its ID.
-Act on each `re-ID:` line. The index [Rules](notes/decisions/README.md#rules) give the steps.
+Act on each `re-ID:` line. The index [Rules](decisions/README.md#rules) give the steps.
 Do not change an ID for a different reason.
 Do not keep two index rows with one ID when you resolve a merge conflict.
 Do not rewrite the body of an entry that is not `proposed`.
@@ -119,21 +119,27 @@ Cite a commit, or the code of another public repository, with a GitHub permalink
 The permalink must pin a full SHA on the default branch of that repository.
 Do not put dated status lines in this file. Put them in the open work or in an entry.
 Do not cite or link to `plans/`.
-Cite an entry of this repository as `ADR-<ID>`. Put the prefix in the link text.
+Cite an entry of this repository as a Markdown link with `ADR-<ID>` as the link text.
 Write the ID in upper case.
-An ID without a repository name is an entry of this repository.
+This rule applies to each text that you write: a tracked file, a plan, a PR body and a reply to the
+user. In a reply or a plan, the path is relative to the repository root or to the file.
+Write the repository name before an entry ID of another repository, for example `site 0013`.
 Cite an entry of the site log as `site XXXX`, with no link.
 Never link to the site repository, and never name its location.
+An entry of another public repository can be on the default branch of that repository.
+Then also link it with a GitHub permalink that pins a full SHA.
+An ID without a repository name is an entry of this repository.
 Restate a site rule here only when framework code or framework documents cite it.
 Do not use the prefix in a file name, an entry heading, an index row, a status line or a YAML value.
 End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
+A commit message cannot hold a working link. In the commit body, write `ADR-<ID>` with no link.
 Cite a provisional entry of another repository by the repository name, the PR number and the slug.
 Do not import a file, a test or a tool from another repository.
 
 ## 6. Git Rules
 
-- `plans/` is a local working folder. Git ignores it. Do not commit it (decision
-  [0001](notes/decisions/0001-decision-log-agents-md-and-private-data.md)).
+- `plans/` is a local working folder. Git ignores it. Do not commit it
+  ([ADR-0001](decisions/0001-decision-log-agents-md-and-private-data.md)).
 - Do not push to a git remote without the approval of the user. One approval for a PR covers its
   push, its draft PR and its description.
 - Ask the user before any other action that is visible outside this machine, for example a PR
@@ -153,8 +159,8 @@ Write the summary in the message text, not only in the tool description.
 
 ## 8. Private Data
 
-This repository is public, or it can become public. Git history is permanent (decision
-[0001](notes/decisions/0001-decision-log-agents-md-and-private-data.md)).
+This repository is public, or it can become public. Git history is permanent
+([ADR-0001](decisions/0001-decision-log-agents-md-and-private-data.md)).
 The rule has no exemption. No folder may hold host values.
 Do not write these in a tracked file, a commit message or a PR body:
 
@@ -166,7 +172,7 @@ Do not write these in a tracked file, a commit message or a PR body:
 - a raw dump of `env`, `pip list`, `docker inspect` or `op item get`.
 
 In prose and examples, use a documentation address (`192.0.2.0/24`) or name the variable.
-Use paths relative to the repository, for example `notes/decisions/README.md`.
+Use paths relative to the repository, for example `decisions/README.md`.
 Give a measurement as a summary with its tool and its version.
 Text from `plans/` must obey these rules before it goes into a tracked file.
 If you find private data in a tracked file, remove it with a redaction edit.

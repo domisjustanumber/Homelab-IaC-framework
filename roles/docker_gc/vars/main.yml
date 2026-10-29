@@ -1,5 +1,5 @@
 ---
-# The inventory names that this role checks (framework ntk9 rules 3 and 4).
+# The inventory names that this role checks (framework NTK9 rules 3 and 4).
 # tools/lint/check_roles.py reads these lists. They are not settings.
 docker_gc_required_values:
   - docker_gc_time

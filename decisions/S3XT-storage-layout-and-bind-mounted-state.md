@@ -1,9 +1,9 @@
-# s3xt — Docker hosts keep state apart from image churn, behind enforced mounts
+# S3XT — Docker hosts keep state apart from image churn, behind enforced mounts
 
-**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user); superseded by [cvm2](cvm2-storage-layout-containerd-root-by-flag.md), 2026-10-29 (user).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user); superseded by [CVM2](CVM2-storage-layout-containerd-root-by-flag.md), 2026-10-29 (user).
 
 This entry restates the generic rules of site 0034 for each Docker host. A VM host also follows
-[msam](msam-docker-host-vm-disks.md). A site entry restates the site values of site 0034 and
+[MSAM](MSAM-docker-host-vm-disks.md). A site entry restates the site values of site 0034 and
 supersedes it.
 
 ## Decision
@@ -12,7 +12,7 @@ supersedes it.
    nodes, appliances or guests without Docker.
 2. **Two storage units.** A state unit is mounted at `docker_dir` (for example `/docker`). A churn
    unit holds the containerd root and the Docker data-root: images, snapshots, container layers and
-   container logs. The host type decides what a unit is: a disk for a VM ([msam](msam-docker-host-vm-disks.md)),
+   container logs. The host type decides what a unit is: a disk for a VM ([MSAM](MSAM-docker-host-vm-disks.md)),
    a mount point for an LXC (a later entry).
 3. **Image store.** The hosts use the default containerd image store of Docker Engine. The
    `docker_engine` role sets the containerd `root` (`/etc/containerd/config.toml`) and the Docker
@@ -48,7 +48,7 @@ supersedes it.
   by its path. A named volume is on the churn unit, `down -v` deletes it, and its name contains the
   project name.
 - An image `VOLUME` that no mount covers becomes an anonymous volume on the churn unit. A recreate
-  leaves it behind, and the GC removes it ([apg1](apg1-daily-docker-gc.md)).
+  leaves it behind, and the GC removes it ([APG1](APG1-daily-docker-gc.md)).
 - The graph-driver store is deprecated. A host that starts on it must migrate each image later.
 
 ## Consequences
@@ -90,3 +90,7 @@ supersedes it.
 - Do not assume that `data-root` moves the images. With the containerd store, it does not.
 - Do not start `containerd` or `dockerd` before their storage mounts.
 - Do not use a named volume for state.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from s3xt._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

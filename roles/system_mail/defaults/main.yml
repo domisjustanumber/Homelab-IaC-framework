@@ -1,7 +1,7 @@
 ---
-# Role defaults: Debian 13 package names (framework ntk9 rule 2).
+# Role defaults: Debian 13 package names (framework NTK9 rule 2).
 # The required values (vars/main.yml) come from the inventory of the site.
-# See ADR-gee3 (notes/decisions/gee3-system-mail-through-msmtp.md).
+# See ADR-GEE3 (decisions/GEE3-system-mail-through-msmtp.md).
 system_mail_conflicting_packages:
   - postfix
   - exim4-daemon-light

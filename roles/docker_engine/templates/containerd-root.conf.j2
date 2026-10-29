@@ -1,7 +1,7 @@
 # Managed by Ansible (roles/docker_engine).
 # The containerd root on the churn unit, set by a flag. /etc/containerd/config.toml
 # stays as the containerd.io package ships it.
-# See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
+# See ADR-CVM2 (decisions/CVM2-storage-layout-containerd-root-by-flag.md).
 [Service]
 ExecStart=
 ExecStart={{ docker_engine_containerd_bin }} --root {{ docker_engine_containerd_root }}

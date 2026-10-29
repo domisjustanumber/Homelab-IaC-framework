@@ -1,9 +1,9 @@
-# msam — A Docker host VM has three disks, and all three are in the backup
+# MSAM — A Docker host VM has three disks, and all three are in the backup
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the VM rules of site 0034. The storage rules for each Docker host are in
-[s3xt](s3xt-storage-layout-and-bind-mounted-state.md). A site entry restates the site values of site
+[S3XT](S3XT-storage-layout-and-bind-mounted-state.md). A site entry restates the site values of site
 0034 and supersedes it.
 
 ## Decision
@@ -64,3 +64,7 @@ This entry restates the VM rules of site 0034. The storage rules for each Docker
 ## Not repeated
 
 - Do not exclude the churn disk from the backup. To change this rule, write a new entry.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from msam._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

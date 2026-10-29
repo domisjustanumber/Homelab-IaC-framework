@@ -2,8 +2,8 @@
 
 This role configures `unattended-upgrades`: the origins, the reboot policy and the report mail.
 It can also move `apt-daily-upgrade.timer`.
-The rules are in [eq0z](../../notes/decisions/eq0z-unattended-upgrades-and-reboots.md) and
-[gee3](../../notes/decisions/gee3-system-mail-through-msmtp.md).
+The rules are in [EQ0Z](../../decisions/EQ0Z-unattended-upgrades-and-reboots.md) and
+[GEE3](../../decisions/GEE3-system-mail-through-msmtp.md).
 
 ## Inventory values
 

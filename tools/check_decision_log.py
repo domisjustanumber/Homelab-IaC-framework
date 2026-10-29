@@ -80,11 +80,11 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-LOG_DIR = Path("notes") / "decisions"
+LOG_DIR = Path("decisions")
 # The root log first. This repo has no modules, so it has no module log.
 LOG_DIRS = (LOG_DIR,)
 # A folder where a log was before a move. Only --new reads it, in other worktrees and on branches.
-OLD_LOG_DIRS: tuple[Path, ...] = ()
+OLD_LOG_DIRS: tuple[Path, ...] = (Path("notes") / "decisions",)  # See ADR-NXK2.
 OPEN_WORK = "open-work.md"
 HISTORICAL = "historical.md"
 TEMPLATE = "template.md"

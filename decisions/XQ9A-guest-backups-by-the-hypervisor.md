@@ -1,4 +1,4 @@
-# xq9a — The hypervisor backs up each guest; no backup agent in the guest
+# XQ9A — The hypervisor backs up each guest; no backup agent in the guest
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
@@ -12,7 +12,7 @@ backup windows of the host) and supersedes site 0023.
 2. **Filesystem-consistent.** The `base` role installs `qemu-guest-agent`. The agent must be on in
    the VM options, so that the backup freezes the filesystems (fsfreeze).
 3. **Backup window.** The backup job of a guest does not run during the maintenance jobs of that
-   guest ([eq0z](eq0z-unattended-upgrades-and-reboots.md)).
+   guest ([EQ0Z](EQ0Z-unattended-upgrades-and-reboots.md)).
 4. **PBS jobs.** Retention, verification and the off-site copy are PBS jobs: a prune job, a verify
    job and a sync job. Check that they exist. Do not assume them. This entry does not manage them.
 5. **Restore drill.** Before a host goes live, and after each change to its disks or to the
@@ -61,3 +61,7 @@ backup windows of the host) and supersedes site 0023.
 - Do not treat a Proxmox snapshot as a backup.
 - Do not boot a restore drill with its network devices connected to the LAN.
 - Do not assume that the PBS prune, verify and sync jobs exist. Check them.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from xq9a._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

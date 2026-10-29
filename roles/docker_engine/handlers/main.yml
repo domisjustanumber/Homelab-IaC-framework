@@ -21,7 +21,7 @@
       and 'Could not find the requested service' in (docker_engine_containerd_restart.msg | default('')))
 
 # live-restore is off, so a restart stops each container.
-# See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
 - name: Restart docker
   ansible.builtin.systemd:
     name: docker

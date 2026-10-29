@@ -1,5 +1,5 @@
 ---
-# Role defaults (framework ntk9 rule 2). The required values
+# Role defaults (framework NTK9 rule 2). The required values
 # (vars/main.yml) come from the inventory of the site and have no default here.
 docker_engine_conflicting_packages:
   - docker.io
@@ -24,14 +24,14 @@ docker_engine_arch_map:
 docker_engine_log_max_size: 50m
 docker_engine_log_max_file: "3"
 docker_engine_address_pool_size: 24
-# Empty: no metrics listener (framework ntk9 rule 2, an opt-in that is off).
+# Empty: no metrics listener (framework NTK9 rule 2, an opt-in that is off).
 docker_engine_metrics_addr: ""
 
 # Both stores are on the churn unit. On a VM host, the churn disk is mounted at
 # the data-root. The containerd root is a folder in the data-root that dockerd
 # does not use: dockerd uses <data-root>/containerd only for a containerd that
 # it starts itself, and these hosts use the containerd of the containerd.io
-# package. See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
+# package. See ADR-CVM2 (decisions/CVM2-storage-layout-containerd-root-by-flag.md).
 docker_engine_data_root: /var/lib/docker
 docker_engine_containerd_root: "{{ docker_engine_data_root }}/containerd-root"
 # The binary of the containerd.io package, for the ExecStart= of the drop-in.
@@ -40,7 +40,7 @@ docker_engine_containerd_bin: /usr/bin/containerd
 # The paths that containerd and dockerd need mounted before they start
 # (systemd RequiresMountsFor=). A path that is not its own mount requires only
 # /, so the drop-ins are safe on a host with one disk.
-# See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
+# See ADR-CVM2 (decisions/CVM2-storage-layout-containerd-root-by-flag.md).
 docker_engine_required_mounts: >-
   {{ ([docker_engine_containerd_root, docker_engine_data_root, docker_dir]
       + (docker_storage_mounts | default([])))

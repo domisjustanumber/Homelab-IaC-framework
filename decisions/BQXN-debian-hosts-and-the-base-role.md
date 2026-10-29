@@ -1,4 +1,4 @@
-# bqxn — Managed hosts run Debian 13; the `base` role
+# BQXN — Managed hosts run Debian 13; the `base` role
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
@@ -11,7 +11,7 @@ supersedes site 0018.
    Ubuntu packages, services, apt origins or credentials. No Ubuntu Pro, no Livepatch, no ESM.
 2. **Kernel fixes need a reboot.** `unattended-upgrades` installs kernel updates. They take effect
    at the next reboot. Each host must have a reboot policy
-   ([eq0z](eq0z-unattended-upgrades-and-reboots.md)).
+   ([EQ0Z](EQ0Z-unattended-upgrades-and-reboots.md)).
 3. **apt sources.** apt sources use the Debian codename. The Docker repository is
    `https://download.docker.com/linux/debian`.
 4. **The `base` role.** The role applies to each host. It has no feature switch. It installs the base
@@ -56,3 +56,7 @@ supersedes site 0018.
 
 - Do not set `net.ipv4.ip_forward` in a hardening sysctl file. Docker needs it.
 - Do not rename the sshd drop-in to a name that sorts after another drop-in.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from bqxn._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

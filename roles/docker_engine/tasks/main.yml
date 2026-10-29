@@ -5,7 +5,7 @@
 # Before the packages: their postinst starts containerd and dockerd. With these
 # drop-ins, neither daemon starts at boot without its storage, so a unit that
 # failed to mount stops the stack. The stack does not start empty on /.
-# See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
+# See ADR-CVM2 (decisions/CVM2-storage-layout-containerd-root-by-flag.md).
 - name: Ensure the drop-in directories exist
   ansible.builtin.file:
     path: "/etc/systemd/system/{{ item }}.d"
@@ -33,7 +33,7 @@
 # containerd root on the churn unit, and not /var/lib/containerd on /. The flag
 # leaves /etc/containerd/config.toml, a conffile of containerd.io, as shipped,
 # so unattended upgrades never hold the package back.
-# See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
+# See ADR-CVM2 (decisions/CVM2-storage-layout-containerd-root-by-flag.md).
 - name: Set the containerd root with a flag
   ansible.builtin.template:
     src: containerd-root.conf.j2
@@ -68,7 +68,7 @@
     mode: "0644"
 
 # unattended-upgrades matches this repository by origin=Docker,label=Docker CE.
-# See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
 - name: Configure the Docker apt repository
   ansible.builtin.deb822_repository:
     name: docker

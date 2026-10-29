@@ -1,4 +1,4 @@
-"""Check the role contract of framework ntk9 rule 4. Runs in the lint container.
+"""Check the role contract of framework NTK9 rule 4. Runs in the lint container.
 
 Each role declares two lists in vars/main.yml:
 <role>_required_values and <role>_opt_in_values.

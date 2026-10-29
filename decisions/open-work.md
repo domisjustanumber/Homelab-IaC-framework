@@ -20,20 +20,20 @@ task. Delete an item when its work is done. The change that closes an item recor
   rule with no exception mechanism needs a change in this log first. When a rule is written here,
   state whether it allows a site exception and what the site entry must hold. The first known
   case is an application that must mount the Docker socket.
-- **Write the storage entry for Docker on an LXC.** [cvm2](cvm2-storage-layout-containerd-root-by-flag.md)
-  covers each Docker host, and [msam](msam-docker-host-vm-disks.md) covers a VM only. An LXC entry
+- **Write the storage entry for Docker on an LXC.** [CVM2](CVM2-storage-layout-containerd-root-by-flag.md)
+  covers each Docker host, and [MSAM](MSAM-docker-host-vm-disks.md) covers a VM only. An LXC entry
   needs the answers to these questions first: which Docker hosts are LXCs, and are they unprivileged;
   the container storage of each node (ZFS subvol, LVM-thin or directory); whether state comes from
   the node or a NAS through a bind mount or NFS, and who backs it up; and whether AppArmor
   `unconfined` is acceptable. Known rules: each mount point sets `backup=1` (vzdump leaves mount
   points out by default); no state on a host bind mount; `nesting=1`, with `keyctl=1` when
   unprivileged; `pct fstrim` and `pct resize`; overlayfs on ZFS needs OpenZFS 2.2 or later.
-  [bqxn](bqxn-debian-hosts-and-the-base-role.md) rule 4 and [xq9a](xq9a-guest-backups-by-the-hypervisor.md)
+  [BQXN](BQXN-debian-hosts-and-the-base-role.md) rule 4 and [XQ9A](XQ9A-guest-backups-by-the-hypervisor.md)
   rule 2 assume a VM (`qemu-guest-agent`). A later entry decides them for an
   LXC.
 - **Changed conffiles hold packages back.** When a role changes a conffile and a later release
   changes the shipped copy, `unattended-upgrades` holds the package back, with no error.
-  [cvm2](cvm2-storage-layout-containerd-root-by-flag.md) removes this case for containerd. Two
+  [CVM2](CVM2-storage-layout-containerd-root-by-flag.md) removes this case for containerd. Two
   roles still change a conffile: `avahi` (`/etc/avahi/avahi-daemon.conf`) and
   `apt_unattended_upgrades` (`/etc/apt/apt.conf.d/50unattended-upgrades`). Decide for each: a
   separate file (for example a later file in `apt.conf.d/`), or a verify check for held-back

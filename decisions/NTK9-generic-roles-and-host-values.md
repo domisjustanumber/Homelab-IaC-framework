@@ -1,4 +1,4 @@
-# ntk9 — Roles are generic; host values come from the inventory of the site
+# NTK9 — Roles are generic; host values come from the inventory of the site
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
@@ -59,3 +59,5 @@ supersedes site 0002.
 ## Not repeated
 
 - Do not give a required value a role default. A wrong default is a silent guess.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from ntk9._

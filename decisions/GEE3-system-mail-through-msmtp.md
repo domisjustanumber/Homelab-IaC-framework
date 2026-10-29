@@ -1,4 +1,4 @@
-# gee3 — System mail goes through an SMTP relay with msmtp
+# GEE3 — System mail goes through an SMTP relay with msmtp
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
@@ -76,3 +76,5 @@ submission service. The packages are `msmtp` and `msmtp-mta`.
 
 - Do not put the SMTP password in `/etc/msmtprc`.
 - Do not leave `Unattended-Upgrade::Sender` at its default.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from gee3._

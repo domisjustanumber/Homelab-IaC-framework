@@ -1,5 +1,5 @@
 ---
-# Runs the required-value assertions of one role (framework ntk9 rule 4).
+# Runs the required-value assertions of one role (framework NTK9 rule 4).
 # tools/lint/check_roles.py starts it with an empty inventory.
 - name: Run the required-value assertions of one role
   hosts: localhost

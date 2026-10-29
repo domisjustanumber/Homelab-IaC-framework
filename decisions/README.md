@@ -6,7 +6,7 @@ playbook, a module, a stack or the agent instructions. Then read the Active entr
 your task. Then you do not repeat a settled question or a completed measurement. Read a Proposed
 entry only for work in its section, or when a skill tells you to. Read an entry of
 [historical.md](historical.md) only to find the reason for a decision
-([0001](0001-decision-log-agents-md-and-private-data.md)).
+([ADR-0001](0001-decision-log-agents-md-and-private-data.md)).
 
 Each entry gives the decision, its reason, the evidence (when there is evidence), the alternatives
 rejected and a "Not repeated" section for pitfalls already found. When a decision changes, add a new
@@ -23,14 +23,14 @@ These entries are `accepted` or `evidence`.
 | # | Decision | Status |
 |---|----------|--------|
 | [0001](0001-decision-log-agents-md-and-private-data.md) | Decision log of the framework and its rules; own IDs; restate a site rule only when cited; `AGENTS.md` only; no private data | accepted |
-| [bqxn](bqxn-debian-hosts-and-the-base-role.md) | Managed hosts run Debian 13, with no Ubuntu parts; the `base` role hardens sshd and installs the guest agent | accepted |
-| [eq0z](eq0z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | accepted |
-| [gee3](gee3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | accepted |
-| [apg1](apg1-daily-docker-gc.md) | Daily Docker GC with anonymous-only volume pruning | accepted |
-| [msam](msam-docker-host-vm-disks.md) | A Docker host VM has three disks, ext4 by UUID, and all three are in the backup | accepted |
-| [xq9a](xq9a-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | accepted |
-| [ntk9](ntk9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
-| [cvm2](cvm2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
+| [BQXN](BQXN-debian-hosts-and-the-base-role.md) | Managed hosts run Debian 13, with no Ubuntu parts; the `base` role hardens sshd and installs the guest agent | accepted |
+| [EQ0Z](EQ0Z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | accepted |
+| [GEE3](GEE3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | accepted |
+| [APG1](APG1-daily-docker-gc.md) | Daily Docker GC with anonymous-only volume pruning | accepted |
+| [MSAM](MSAM-docker-host-vm-disks.md) | A Docker host VM has three disks, ext4 by UUID, and all three are in the backup | accepted |
+| [XQ9A](XQ9A-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | accepted |
+| [NTK9](NTK9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
+| [CVM2](CVM2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
 
 ### Proposed
 
@@ -43,7 +43,7 @@ These entries wait for a decision of the user. Section is the section or area of
 | [0003](0003-controller-pushes-stacks.md) | The controller pushes Compose stacks; hosts hold no Git credentials | `stacks` | proposed |
 | [0004](0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
 | [0005](0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
-| [b7zv](b7zv-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 or later | `licence` | proposed |
+| [B7ZV](B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 or later | `licence` | proposed |
 | [NXK2](NXK2-current-decision-log-kit.md) | The current decision-log kit: upper-case IDs, `ADR-` citations, `decisions/`, no AI attribution, linters in a uv venv | `process` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
@@ -140,11 +140,16 @@ The open work is in [open-work.md](open-work.md).
   GitHub permalink that pins a full 40-character SHA on the default branch of that repo. Do not cite
   or link `plans/`.
 - Until a commit is on `main`, cite its PR number and the file path, not its SHA.
-- Cite an entry of this log as `ADR-<ID>`. Put the prefix in the link text. A bare ID is always an
-  entry of this log. Do not use the prefix in a file name, a heading, an index row, a status line or
-  a YAML value. End each commit subject that adds or changes an entry with `(ADR-<ID>)`. Write an ID
-  in YAML front matter in quotes. Cite a provisional entry of another repo by the repo name, the PR
-  number and the slug.
+- Cite an entry of this log as a Markdown link with `ADR-<ID>` as the link text, with the ID in upper
+  case. This rule applies to each text that you write: a tracked file, a plan, a PR body and a reply
+  to the user. In a reply or a plan, the path is relative to the repo root or to the file. Write the
+  ID of another repo's entry with the repo name, for example `site 0013`. When that entry is on the
+  default branch of a public repo, also link it with a permalink that pins a full 40-character SHA.
+  A bare ID is always an entry of this log. Do not use the prefix in a file name, a heading, an index
+  row, a status line or a YAML value. End each commit subject that adds or changes an entry with
+  `(ADR-<ID>)`. A commit message cannot hold a working link: its body writes `ADR-<ID>` with no
+  link. Write an ID in YAML front matter in quotes. Cite a provisional entry of another repo by the
+  repo name, the PR number and the slug.
 - Cite an entry of the site log as `site XXXX`, with no link. Never link to the site repository, and
   never name its location.
 - A site rule becomes an entry of this log only when framework code or framework documents cite it.

@@ -1,4 +1,4 @@
-# apg1 — Daily Docker GC with anonymous-only volume pruning
+# APG1 — Daily Docker GC with anonymous-only volume pruning
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
@@ -24,11 +24,11 @@ IOSchedulingClass=idle
    `docker`. In a oneshot unit, the lines run in order, and a failure skips the rest.
 3. **Host values.** `docker_gc_time` (`HH:MM`) and `docker_gc_image_retention` (the `until=` value)
    come from the inventory. The time fits the maintenance window of the host
-   ([eq0z](eq0z-unattended-upgrades-and-reboots.md)).
+   ([EQ0Z](EQ0Z-unattended-upgrades-and-reboots.md)).
 4. **Missed runs.** The timer has `Persistent=true`, so a run that the host missed starts at the
    next boot.
 5. **Failure mail.** With system mail on, the service has `OnFailure=status-email@%n.service`
-   ([gee3](gee3-system-mail-through-msmtp.md)).
+   ([GEE3](GEE3-system-mail-through-msmtp.md)).
 6. **Manual reaping.** To remove the named volumes of an old project, run
    `docker volume prune -af --filter "label=com.docker.compose.project=<old>"` by hand, for that
    project only.
@@ -51,7 +51,7 @@ IOSchedulingClass=idle
 - Image and build-cache growth has a limit, and no named volume or bind-mounted state is at risk.
 - Abandoned named volumes stay until a person removes them.
 - **Image age.** The hosts use the containerd image store, the default of a fresh Docker Engine 29
-  install ([s3xt](s3xt-storage-layout-and-bind-mounted-state.md)). There, `until=` compares the time
+  install ([S3XT](S3XT-storage-layout-and-bind-mounted-state.md)). There, `until=` compares the time
   of the local image record. When a pull replaces a tag, the old image becomes a dangling record
   with the time of that pull. An image that Watchtower replaced therefore stays for about the
   retention, plus up to one day. With the older graph-driver store, `until=` compares the build
@@ -92,3 +92,7 @@ IOSchedulingClass=idle
 - Do not add `-a` to the volume prune, and do not prune volumes with `dangling=true`.
 - Do not join the two commands with `&&` in one `ExecStart=`.
 - Do not count on the retention as a rollback window. It depends on the image store.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from apg1._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

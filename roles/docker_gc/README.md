@@ -4,19 +4,19 @@ This role installs the systemd service `docker-gc.service` and the daily timer `
 The service is a oneshot unit with two `ExecStart=` lines.
 The first line runs `docker system prune -af --filter until=<retention>`.
 The second line runs `docker volume prune -f`.
-The rules are in [apg1](../../notes/decisions/apg1-daily-docker-gc.md).
+The rules are in [APG1](../../decisions/APG1-daily-docker-gc.md).
 
 ## Inventory values
 
 The inventory of the site supplies these values.
 The role asserts the required values at the start
-([ntk9](../../notes/decisions/ntk9-generic-roles-and-host-values.md)).
+([NTK9](../../decisions/NTK9-generic-roles-and-host-values.md)).
 
 | Variable | Kind | Purpose |
 |---|---|---|
 | `docker_gc_time` | required | The time (`HH:MM`) when the timer starts the service |
 | `docker_gc_image_retention` | required | The `until=` value of `docker system prune` |
-| `system_mail_enabled` | feature switch | When `true`, the service gets `OnFailure=status-email@%n.service` ([gee3](../../notes/decisions/gee3-system-mail-through-msmtp.md)) |
+| `system_mail_enabled` | feature switch | When `true`, the service gets `OnFailure=status-email@%n.service` ([GEE3](../../decisions/GEE3-system-mail-through-msmtp.md)) |
 
 ## Role defaults
 

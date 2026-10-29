@@ -1,10 +1,10 @@
-# cvm2 — Docker hosts keep state apart from image churn; the containerd root is set by a flag
+# CVM2 — Docker hosts keep state apart from image churn; the containerd root is set by a flag
 
 **Status:** proposed, 2026-10-29 (agent); accepted, 2026-10-29 (user).
 
-Supersedes [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) in full. This entry restates each
-rule of s3xt. It changes one: how the `docker_engine` role sets the containerd root. s3xt restated
-the generic rules of site 0034. A VM host also follows [msam](msam-docker-host-vm-disks.md).
+Supersedes [S3XT](S3XT-storage-layout-and-bind-mounted-state.md) in full. This entry restates each
+rule of S3XT. It changes one: how the `docker_engine` role sets the containerd root. S3XT restated
+the generic rules of site 0034. A VM host also follows [MSAM](MSAM-docker-host-vm-disks.md).
 
 ## Decision
 
@@ -12,7 +12,7 @@ the generic rules of site 0034. A VM host also follows [msam](msam-docker-host-v
    nodes, appliances or guests without Docker.
 2. **Two storage units.** A state unit is mounted at `docker_dir` (for example `/docker`). A churn
    unit holds the containerd root and the Docker data-root: images, snapshots, container layers and
-   container logs. The host type decides what a unit is: a disk for a VM ([msam](msam-docker-host-vm-disks.md)),
+   container logs. The host type decides what a unit is: a disk for a VM ([MSAM](MSAM-docker-host-vm-disks.md)),
    a mount point for an LXC (a later entry).
 3. **Image store.** The hosts use the default containerd image store of Docker Engine. The
    `docker_engine` role sets the containerd root with the `--root` flag, in a drop-in on
@@ -43,12 +43,12 @@ the generic rules of site 0034. A VM host also follows [msam](msam-docker-host-v
   partition. A drop-in on `docker.service` alone does not stop `containerd.service`.
 - `/etc/containerd/config.toml` is a conffile of the `containerd.io` package. When a host changes it
   and a later release changes the shipped copy, `unattended-upgrades` holds the package back, with
-  no error ([eq0z](eq0z-unattended-upgrades-and-reboots.md) rule 1 then fails for the Docker
+  no error ([EQ0Z](EQ0Z-unattended-upgrades-and-reboots.md) rule 1 then fails for the Docker
   origin). The `--root` flag leaves the conffile as shipped, and the shipped settings still apply.
 - A bind mount survives `docker compose down -v`, `docker volume prune -a` and a renamed project,
   and Ansible sets its owner and mode. A named volume is on the churn unit, and `down -v` deletes it.
 - An image `VOLUME` that no mount covers becomes an anonymous volume that the GC removes
-  ([apg1](apg1-daily-docker-gc.md)).
+  ([APG1](APG1-daily-docker-gc.md)).
 
 ## Consequences
 
@@ -79,7 +79,7 @@ the generic rules of site 0034. A VM host also follows [msam](msam-docker-host-v
 - **Named volumes for state.** On the churn unit, and deleted by `down -v`.
 - **The churn on the state unit.** Image churn is then next to the database again.
 - **`nofail` mounts without `RequiresMountsFor=`.** The stack starts on an empty `docker_dir`.
-- **The containerd root in `/etc/containerd/config.toml`** (s3xt). The changed conffile can hold
+- **The containerd root in `/etc/containerd/config.toml`** (S3XT). The changed conffile can hold
   `containerd.io` back.
 - **`--force-confold` for each unattended upgrade.** It covers each package, but it also keeps a
   changed conffile when Debian changes the shipped copy for a reason, with no notice.
@@ -90,3 +90,7 @@ the generic rules of site 0034. A VM host also follows [msam](msam-docker-host-v
 - Do not start `containerd` or `dockerd` before their storage mounts.
 - Do not use a named volume for state.
 - Do not set the containerd root in `/etc/containerd/config.toml`.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from cvm2._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

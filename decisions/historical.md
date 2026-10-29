@@ -9,4 +9,4 @@ the reason for a decision. The [index](README.md) has the Active and Proposed en
 
 | # | Decision | Status |
 |---|----------|--------|
-| [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | superseded by cvm2 |
+| [S3XT](S3XT-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | superseded by CVM2 |

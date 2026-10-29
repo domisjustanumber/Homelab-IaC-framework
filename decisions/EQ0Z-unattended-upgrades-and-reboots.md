@@ -1,4 +1,4 @@
-# eq0z — Unattended upgrades match Debian's security suite; reboots are automatic and opt-in
+# EQ0Z — Unattended upgrades match Debian's security suite; reboots are automatic and opt-in
 
 **Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
@@ -38,7 +38,7 @@ values and supersedes them.
    reboot run at different times, in this order. The upgrade time is before the reboot time. The
    site records the times of each host.
 8. **Report.** With system mail on, `unattended-upgrades` reports `on-change`
-   ([gee3](gee3-system-mail-through-msmtp.md)). Without it, the role writes no `Mail` lines.
+   ([GEE3](GEE3-system-mail-through-msmtp.md)). Without it, the role writes no `Mail` lines.
 9. **Verify.** The verify play asserts that `unattended-upgrades --dry-run --debug` lists
    `<codename>-security` in the allowed origins, that both `Automatic-Reboot` settings are present
    where the host opts in, and that `/var/run/reboot-required` is absent after the window.
@@ -90,3 +90,7 @@ values and supersedes them.
 
 - Do not remove the `${distro_codename}-security` line. It is the line that matches.
 - Do not turn on `live-restore`.
+
+_Edited 2026-10-29 (ADR-NXK2): re-ID from eq0z._
+
+_Edited 2026-10-29 (ADR-NXK2): citation repair._

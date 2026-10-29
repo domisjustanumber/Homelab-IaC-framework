@@ -29,7 +29,7 @@
     mode: "0755"
   when: updates_upgrade_time | length > 0
 
-# See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
 - name: Install apt-daily-upgrade.timer drop-in
   ansible.builtin.template:
     src: apt-daily-upgrade-override.conf.j2
