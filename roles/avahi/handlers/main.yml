@@ -1,0 +1,12 @@
+---
+# --check on a fresh host: the unit does not exist yet (tasks/main.yml).
+- name: Restart avahi-daemon
+  ansible.builtin.service:
+    name: avahi-daemon
+    state: restarted
+  register: avahi_restart
+  failed_when:
+    - avahi_restart is failed
+    - >-
+      not (ansible_check_mode and avahi_install | default({}) is changed
+      and 'Could not find the requested service' in (avahi_restart.msg | default('')))

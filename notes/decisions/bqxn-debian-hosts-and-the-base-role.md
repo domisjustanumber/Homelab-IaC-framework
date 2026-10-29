@@ -1,6 +1,6 @@
 # bqxn — Managed hosts run Debian 13; the `base` role
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the generic rules of site 0018. A site entry restates its site values and
 supersedes site 0018.

@@ -1,0 +1,113 @@
+---
+- name: Assert the required values
+  ansible.builtin.import_tasks: assert.yml
+
+- name: Install base packages
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ base_apt_cache_valid_time }}"
+  register: base_packages_install
+
+# Under --check a package that is not installed yet only reports "changed", so
+# its unit does not exist and the service task fails. Only that error is
+# tolerated, only in check mode and only when the install would change
+# something; a normal run, and --check on a provisioned host, still fail.
+- name: Enable and start chrony
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true
+  register: base_chrony_service
+  failed_when:
+    - base_chrony_service is failed
+    - >-
+      not (ansible_check_mode and base_packages_install is changed
+      and 'Could not find the requested service' in (base_chrony_service.msg | default('')))
+
+- name: Enable and start the QEMU guest agent
+  ansible.builtin.service:
+    name: qemu-guest-agent
+    state: started
+    enabled: true
+  register: base_qemu_ga_service
+  failed_when:
+    - base_qemu_ga_service is failed
+    - >-
+      not (ansible_check_mode and base_packages_install is changed
+      and 'Could not find the requested service' in (base_qemu_ga_service.msg | default('')))
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Create journald drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Limit journald disk usage
+  ansible.builtin.template:
+    src: journald-limits.conf.j2
+    dest: /etc/systemd/journald.conf.d/50-limits.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart journald
+
+- name: Apply hardening sysctls
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: "{{ base_sysctl_file }}"
+    state: present
+    reload: true
+  loop: "{{ base_sysctls | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Create admin user
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    shell: "{{ base_admin_shell }}"
+    groups: "{{ base_admin_groups }}"
+    append: true
+    create_home: true
+    state: present
+
+- name: Grant admin user passwordless sudo
+  ansible.builtin.copy:
+    content: "{{ admin_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    dest: "/etc/sudoers.d/90-{{ admin_user }}"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+
+# A public key is not a secret. A lookup runs on the controller also in --check,
+# so the task is skipped in --check: a check run then needs no 1Password access.
+# See ADR-bqxn (notes/decisions/bqxn-debian-hosts-and-the-base-role.md).
+- name: Install admin user's authorized key from 1Password
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ lookup('community.general.onepassword', admin_ssh_key_op_item, field=base_admin_ssh_key_op_field, vault=op_vault) }}"
+    state: present
+  when: not ansible_check_mode
+
+- name: Harden sshd
+  ansible.builtin.template:
+    src: sshd-hardening.conf.j2
+    dest: "{{ base_ssh_dropin_dir }}/00-hardening.conf"
+    owner: root
+    group: root
+    mode: "0644"
+    validate: "{{ base_sshd_binary }} -t -f %s"
+  notify: Reload sshd

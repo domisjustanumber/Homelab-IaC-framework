@@ -1,0 +1,53 @@
+# docker_engine
+
+Installs Docker CE from the Docker apt repository for Debian (deb822 source).
+First, it removes the distribution packages (`docker.io`, `containerd`, `runc`, ...).
+It renders `/etc/containerd/config.toml` and `/etc/docker/daemon.json`.
+It adds a drop-in with `RequiresMountsFor=` to `containerd.service` and to `docker.service`.
+
+## Inventory values
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `docker_default_address_pool_cidr` | yes | The `default-address-pools` base. It must not overlap the LAN or another CIDR of the host. Check the routes and the Docker networks before you set it. |
+| `docker_dir` | yes | The state unit. The drop-ins require its mount. |
+| `docker_storage_mounts` | no | More mounts that the drop-ins require. The default is `[]`. |
+
+The role asserts each required value first.
+A value that is not set, or that is `CHANGEME` or `CONFIRM`, stops the run.
+
+## Role defaults
+
+| Variable | Default |
+|---|---|
+| `docker_engine_data_root` | `/var/lib/docker` (`data-root` in `daemon.json`) |
+| `docker_engine_containerd_root` | `<data-root>/containerd-root` (`root` in `config.toml`) |
+| `docker_engine_required_mounts` | the containerd root, the data-root, `docker_dir` and `docker_storage_mounts` |
+| `docker_engine_packages`, `docker_engine_conflicting_packages` | the package lists |
+| `docker_engine_repo_url`, `docker_engine_key_url`, `docker_engine_key_path`, `docker_engine_arch_map` | the apt repository |
+| `docker_engine_log_max_size`, `docker_engine_log_max_file` | `50m`, `3` (`json-file` log options) |
+| `docker_engine_address_pool_size` | `24` |
+| `docker_engine_metrics_addr` | `127.0.0.1:9323` |
+
+The containerd root and the data-root must be on the churn unit
+([s3xt](../../notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md) rule 3).
+`dockerd` uses `<data-root>/containerd` only for a containerd that it starts itself.
+The role uses the containerd of the `containerd.io` package, so `containerd-root` is not used by `dockerd`.
+`config.toml` keeps the setting that `containerd.io` ships (`disabled_plugins = ["cri"]`) and sets `root`.
+
+## Handlers
+
+- `Reload systemd` runs when a drop-in changes.
+- `Restart containerd` runs when `config.toml` changes.
+- `Restart docker` runs when `config.toml` or `daemon.json` changes.
+  `live-restore` is off, so a restart stops each container
+  ([eq0z](../../notes/decisions/eq0z-unattended-upgrades-and-reboots.md) rule 6).
+
+## Decisions
+
+- [s3xt](../../notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md): the containerd root,
+  the data-root and the drop-ins.
+- [eq0z](../../notes/decisions/eq0z-unattended-upgrades-and-reboots.md): `live-restore` is off.
+  The Docker apt origin must stay `origin=Docker,label=Docker CE`, because unattended upgrades match it.
+- [0003](../../notes/decisions/0003-controller-pushes-stacks.md) (proposed): the play deploys stacks
+  with `community.docker.docker_compose_v2`, so the role installs `docker-compose-plugin`.

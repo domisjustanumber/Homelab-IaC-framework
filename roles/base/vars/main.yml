@@ -1,0 +1,10 @@
+---
+# The inventory names that this role checks (framework ntk9 rules 3 and 4).
+# tools/lint/check_roles.py reads these lists. They are not settings.
+base_required_values:
+  - hostname
+  - timezone
+  - admin_user
+  - admin_ssh_key_op_item
+  - op_vault
+base_opt_in_values: []

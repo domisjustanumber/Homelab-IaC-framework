@@ -1,0 +1,42 @@
+---
+- name: Assert the required values
+  ansible.builtin.import_tasks: assert.yml
+
+- name: Install avahi packages
+  ansible.builtin.apt:
+    name: "{{ avahi_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  register: avahi_install
+
+- name: Configure avahi-daemon
+  ansible.builtin.template:
+    src: avahi-daemon.conf.j2
+    dest: "{{ avahi_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart avahi-daemon
+
+- name: Resolve .local names via mDNS in nsswitch
+  ansible.builtin.lineinfile:
+    path: /etc/nsswitch.conf
+    regexp: '^hosts:'
+    line: "{{ avahi_nsswitch_hosts }}"
+    state: present
+
+# Under --check a fresh host only "would install" avahi-daemon, so its unit does
+# not exist yet. Only that error is tolerated, only in check mode and only when
+# the install would change; a normal run still fails.
+- name: Enable and start avahi-daemon
+  ansible.builtin.service:
+    name: avahi-daemon
+    state: started
+    enabled: true
+  register: avahi_service
+  failed_when:
+    - avahi_service is failed
+    - >-
+      not (ansible_check_mode and avahi_install is changed
+      and 'Could not find the requested service' in (avahi_service.msg | default('')))

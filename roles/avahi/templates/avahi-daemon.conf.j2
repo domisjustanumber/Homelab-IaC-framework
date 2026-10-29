@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+[server]
+host-name={{ avahi_hostname | regex_replace('\.local$', '') }}
+use-ipv4=yes
+use-ipv6=yes
+allow-interfaces={{ lan_interface }}
+
+# publish-* keys belong in [publish]: under [server] avahi-daemon refuses to start
+# ('Invalid configuration key "publish-domain" in group "server"').
+[publish]
+publish-workstation=yes
+publish-addresses=yes
+publish-hinfo=no
+publish-domain=no

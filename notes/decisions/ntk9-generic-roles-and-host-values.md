@@ -1,6 +1,6 @@
 # ntk9 — Roles are generic; host values come from the inventory of the site
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the generic rules of site 0002. Site 0047 restates its site rules and
 supersedes site 0002.

@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+# See ADR-apg1 (notes/decisions/apg1-daily-docker-gc.md).
+[Unit]
+Description=Daily Docker prune at {{ docker_gc_time }}
+
+[Timer]
+OnCalendar=*-*-* {{ docker_gc_time }}:00
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

@@ -1,6 +1,6 @@
 # eq0z — Unattended upgrades match Debian's security suite; reboots are automatic and opt-in
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the generic rules of site 0020 and site 0029. A site entry restates their site
 values and supersedes them.

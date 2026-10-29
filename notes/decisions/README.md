@@ -22,6 +22,14 @@ These entries are `accepted` or `evidence`.
 | # | Decision | Status |
 |---|----------|--------|
 | [0001](0001-decision-log-agents-md-and-private-data.md) | Decision log of the framework and its rules; own IDs; restate a site rule only when cited; `AGENTS.md` only; no private data | accepted |
+| [bqxn](bqxn-debian-hosts-and-the-base-role.md) | Managed hosts run Debian 13, with no Ubuntu parts; the `base` role hardens sshd and installs the guest agent | accepted |
+| [eq0z](eq0z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | accepted |
+| [gee3](gee3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | accepted |
+| [apg1](apg1-daily-docker-gc.md) | Daily Docker GC with anonymous-only volume pruning | accepted |
+| [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | accepted |
+| [msam](msam-docker-host-vm-disks.md) | A Docker host VM has three disks, ext4 by UUID, and all three are in the backup | accepted |
+| [xq9a](xq9a-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | accepted |
+| [ntk9](ntk9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
 
 ### Proposed
 
@@ -35,14 +43,6 @@ These entries wait for a decision of the user. Section is the section or area of
 | [0004](0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
 | [0005](0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
 | [b7zv](b7zv-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 or later | `licence` | proposed |
-| [bqxn](bqxn-debian-hosts-and-the-base-role.md) | Managed hosts run Debian 13, with no Ubuntu parts; the `base` role hardens sshd and installs the guest agent | `hosts` | proposed |
-| [eq0z](eq0z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | `updates` | proposed |
-| [gee3](gee3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | `mail` | proposed |
-| [apg1](apg1-daily-docker-gc.md) | Daily Docker GC with anonymous-only volume pruning | `docker_gc` | proposed |
-| [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | `storage` | proposed |
-| [msam](msam-docker-host-vm-disks.md) | A Docker host VM has three disks, ext4 by UUID, and all three are in the backup | `storage` | proposed |
-| [xq9a](xq9a-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | `backups` | proposed |
-| [ntk9](ntk9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | `roles` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
 `evidence; used by XXXX` or `done` are in [historical.md](historical.md).

@@ -1,0 +1,59 @@
+---
+- name: Assert the required values
+  ansible.builtin.import_tasks: assert.yml
+
+# The secrets role renders /etc/msmtp-password before this role runs.
+# See ADR-gee3 (notes/decisions/gee3-system-mail-through-msmtp.md).
+- name: Purge conflicting mail transport agents
+  ansible.builtin.apt:
+    name: "{{ system_mail_conflicting_packages }}"
+    state: absent
+    purge: true
+    autoremove: true
+
+- name: Preseed msmtp AppArmor debconf question
+  ansible.builtin.debconf:
+    name: msmtp
+    question: msmtp/apparmor
+    vtype: boolean
+    value: "false"
+
+- name: Install msmtp and msmtp-mta
+  ansible.builtin.apt:
+    name: "{{ system_mail_packages }}"
+    state: present
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
+- name: Install /etc/msmtprc
+  ansible.builtin.template:
+    src: msmtprc.j2
+    dest: /etc/msmtprc
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install /etc/aliases
+  ansible.builtin.template:
+    src: aliases.j2
+    dest: /etc/aliases
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install systemd-email script
+  ansible.builtin.copy:
+    src: systemd-email
+    dest: /usr/local/bin/systemd-email
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install status-email@.service
+  ansible.builtin.copy:
+    src: status-email@.service
+    dest: /etc/systemd/system/status-email@.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd for status-email

@@ -1,0 +1,11 @@
+---
+# The inventory names that this role checks (framework ntk9 rules 3 and 4).
+# tools/lint/check_roles.py reads these lists. They are not settings.
+system_mail_required_values:
+  - system_mail_smarthost
+  - system_mail_port
+  - system_mail_tls_starttls
+  - system_mail_user
+  - system_mail_from
+  - system_mail_admin
+system_mail_opt_in_values: []

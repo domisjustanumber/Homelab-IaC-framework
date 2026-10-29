@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+# See ADR-apg1 (notes/decisions/apg1-daily-docker-gc.md).
+#
+# Retention: `until` on `system prune` applies to stopped containers, unused
+# networks, unused images and the build cache. On the containerd image store
+# (the default of a fresh Docker Engine 29 install), `until` compares the time
+# of the local image record. When a pull replaces a tag, the old image becomes a
+# dangling record with the time of that pull. A superseded image therefore stays
+# for about {{ docker_gc_image_retention }}, plus up to one day. On the older
+# graph-driver store, `until` compares the build time, and a superseded image
+# normally goes at the next run. The retention is NOT a rollback window.
+# Volumes: `volume prune -f` removes only anonymous volumes that no container
+# uses. NEVER add `-a`: named volumes then become eligible.
+[Unit]
+Description=Docker garbage collection ({{ docker_gc_image_retention }} retention)
+Requires=docker.service
+After=docker.service
+{% if system_mail_enabled | default(false) %}
+OnFailure=status-email@%n.service
+{% endif %}
+
+[Service]
+Type=oneshot
+# Type=oneshot is the only unit type that may repeat ExecStart=; the commands run
+# in order and a failure (without a "-" prefix) skips the rest and fails the unit.
+ExecStart={{ docker_gc_docker_bin }} system prune -af --filter until={{ docker_gc_image_retention }}
+ExecStart={{ docker_gc_docker_bin }} volume prune -f
+Nice=10
+IOSchedulingClass=idle

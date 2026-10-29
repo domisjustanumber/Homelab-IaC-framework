@@ -1,0 +1,43 @@
+---
+# Role constants. The required values (vars/main.yml) have no default here.
+# They come from the inventory of the site.
+# See ADR-ntk9 (notes/decisions/ntk9-generic-roles-and-host-values.md).
+base_packages:
+  - python3
+  - ca-certificates
+  - curl
+  - sudo
+  - rsync
+  - chrony
+  - unattended-upgrades
+  - needrestart
+  - jq
+  - git
+  - qemu-guest-agent
+
+base_apt_cache_valid_time: 3600
+
+base_journald_system_max_use: 1G
+
+base_ssh_dropin_dir: /etc/ssh/sshd_config.d
+base_sshd_binary: /usr/sbin/sshd
+
+base_admin_shell: /bin/bash
+base_admin_groups:
+  - sudo
+
+# 1Password field holding the admin user's public key (not a secret).
+base_admin_ssh_key_op_field: public key
+
+# Hardening only. net.ipv4.ip_forward is deliberately absent: Docker needs it.
+# See ADR-bqxn (notes/decisions/bqxn-debian-hosts-and-the-base-role.md).
+base_sysctl_file: /etc/sysctl.d/90-homelab-hardening.conf
+base_sysctls:
+  kernel.dmesg_restrict: "1"
+  kernel.kptr_restrict: "2"
+  net.ipv4.conf.all.rp_filter: "1"
+  net.ipv4.conf.default.rp_filter: "1"
+  net.ipv4.conf.all.accept_redirects: "0"
+  net.ipv4.conf.default.accept_redirects: "0"
+  net.ipv4.conf.all.send_redirects: "0"
+  net.ipv4.tcp_syncookies: "1"

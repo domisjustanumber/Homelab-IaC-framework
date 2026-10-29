@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+[Timer]
+OnCalendar=
+OnCalendar=*-*-* {{ updates_upgrade_time }}:00
+RandomizedDelaySec=0

@@ -1,6 +1,6 @@
 # xq9a — The hypervisor backs up each guest; no backup agent in the guest
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the generic rules of site 0023. A site entry restates its site values (the
 backup windows of the host) and supersedes site 0023.

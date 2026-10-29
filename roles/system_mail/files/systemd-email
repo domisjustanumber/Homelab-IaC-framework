@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+unit="$1"
+{
+  printf 'To: root\nSubject: [%s] %s failed\n\n' "$(hostname)" "$unit"
+  systemctl status --no-pager --full --lines=100 "$unit" 2>&1 || true
+  journalctl --no-pager --lines=100 -u "$unit" 2>&1 || true
+} | /usr/sbin/sendmail -oi -t

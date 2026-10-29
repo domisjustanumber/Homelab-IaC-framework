@@ -1,0 +1,11 @@
+---
+# Exact versions, validated with ansible-core 2.21.5 in tools/lint/Dockerfile.
+# Bump deliberately: change the version here, rebuild the lint image, re-run
+# tools/lint.sh. Ranges are not pins (PLAN.md §3).
+collections:
+  - name: ansible.posix
+    version: "2.2.2"
+  - name: community.docker
+    version: "5.4.0"
+  - name: community.general
+    version: "13.5.0"

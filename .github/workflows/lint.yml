@@ -1,0 +1,23 @@
+---
+name: Lint
+
+"on":
+  push:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: yamllint, ansible-lint, role checks and shellcheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build the lint image
+        run: docker build -f tools/lint/Dockerfile -t homelab-lint:1 .
+      - name: Run the lint suite
+        run: docker run --rm -v "$PWD:/repo" -w /repo homelab-lint:1 sh tools/lint/check.sh

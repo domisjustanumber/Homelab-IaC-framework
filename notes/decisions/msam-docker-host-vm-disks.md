@@ -1,6 +1,6 @@
 # msam — A Docker host VM has three disks, and all three are in the backup
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the VM rules of site 0034. The storage rules for each Docker host are in
 [s3xt](s3xt-storage-layout-and-bind-mounted-state.md). A site entry restates the site values of site

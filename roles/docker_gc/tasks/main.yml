@@ -1,0 +1,34 @@
+---
+- name: Assert the required values
+  ansible.builtin.import_tasks: assert.yml
+
+- name: Install docker-gc service and timer
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - docker-gc.service
+    - docker-gc.timer
+  notify: Reload systemd
+  register: docker_gc_units
+
+- name: Apply systemd changes before enabling the timer
+  ansible.builtin.meta: flush_handlers
+
+# Under --check the unit files above are not written on a fresh host, so the
+# timer does not exist yet. Only that error is tolerated, only in check mode and
+# only when the unit files would change; a normal run still fails.
+- name: Enable and start docker-gc timer
+  ansible.builtin.systemd:
+    name: docker-gc.timer
+    enabled: true
+    state: started
+  register: docker_gc_timer
+  failed_when:
+    - docker_gc_timer is failed
+    - >-
+      not (ansible_check_mode and docker_gc_units is changed
+      and 'Could not find the requested service' in (docker_gc_timer.msg | default('')))

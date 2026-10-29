@@ -1,6 +1,6 @@
 # gee3 — System mail goes through an SMTP relay with msmtp
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 Supersedes site 0025 in full. This entry restates each rule of site 0025. Site 0025 holds no site
 values.

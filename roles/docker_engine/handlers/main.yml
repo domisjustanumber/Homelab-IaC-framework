@@ -1,0 +1,36 @@
+---
+# Handlers run in the order of this file. A changed drop-in takes effect at the
+# next start of the unit (boot or a restart below). A reload only makes systemd
+# read it.
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+# A new containerd root needs a restart of containerd, and then of dockerd.
+- name: Restart containerd
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
+  # --check on a fresh host: the unit does not exist yet (tasks/main.yml).
+  register: docker_engine_containerd_restart
+  failed_when:
+    - docker_engine_containerd_restart is failed
+    - >-
+      not (ansible_check_mode
+      and (docker_engine_repo | default({}) is changed or docker_engine_install | default({}) is changed)
+      and 'Could not find the requested service' in (docker_engine_containerd_restart.msg | default('')))
+
+# live-restore is off, so a restart stops each container.
+# See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+- name: Restart docker
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted
+  # --check on a fresh host: the unit does not exist yet (tasks/main.yml).
+  register: docker_engine_restart
+  failed_when:
+    - docker_engine_restart is failed
+    - >-
+      not (ansible_check_mode
+      and (docker_engine_repo | default({}) is changed or docker_engine_install | default({}) is changed)
+      and 'Could not find the requested service' in (docker_engine_restart.msg | default('')))

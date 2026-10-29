@@ -15,3 +15,7 @@ plans/
 .venv/
 __pycache__/
 .pytest_cache/
+
+# Ansible
+*.retry
+collections/

@@ -1,6 +1,6 @@
 # apg1 — Daily Docker GC with anonymous-only volume pruning
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
 
 This entry restates the generic rules of site 0010. A site entry restates its site values (the time
 and the retention) and supersedes site 0010.

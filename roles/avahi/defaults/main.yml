@@ -1,0 +1,11 @@
+---
+# Constants that are correct on each supported host (Debian 13).
+# See ADR-ntk9 (notes/decisions/ntk9-generic-roles-and-host-values.md).
+# avahi_hostname and lan_interface are required values. They have no default.
+avahi_packages:
+  - avahi-daemon
+  - avahi-utils
+  - libnss-mdns
+
+avahi_config_path: /etc/avahi/avahi-daemon.conf
+avahi_nsswitch_hosts: "hosts:          files mdns4_minimal [NOTFOUND=return] dns"

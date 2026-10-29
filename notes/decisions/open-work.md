@@ -31,3 +31,10 @@ task. Delete an item when its work is done. The change that closes an item recor
   [bqxn](bqxn-debian-hosts-and-the-base-role.md) rule 4 and [xq9a](xq9a-guest-backups-by-the-hypervisor.md)
   rule 2 assume a VM (`qemu-guest-agent`). The platform-classes entry of the site roadmap (N10)
   decides them for an LXC.
+- **Check the containerd conffile on the first host.** The `docker_engine` role owns
+  `/etc/containerd/config.toml` ([s3xt](s3xt-storage-layout-and-bind-mounted-state.md) rule 3). The
+  file is a conffile of `containerd.io`. If a new release of the package changes its shipped copy,
+  `unattended-upgrades` holds the package back, and [eq0z](eq0z-unattended-upgrades-and-reboots.md)
+  has no rule for this case. On the first host, compare the rendered file with
+  `config.toml.dpkg-dist`. Then decide whether a verify check or an entry must cover a held-back
+  package.

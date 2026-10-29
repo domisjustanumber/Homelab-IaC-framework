@@ -1,0 +1,133 @@
+---
+- name: Assert the required values
+  ansible.builtin.import_tasks: assert.yml
+
+# Before the packages: their postinst starts containerd and dockerd. With these
+# drop-ins, neither daemon starts at boot without its storage, so a unit that
+# failed to mount stops the stack. The stack does not start empty on /.
+# See ADR-s3xt (notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md).
+- name: Ensure the drop-in directories exist
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}.d"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - containerd.service
+    - docker.service
+
+- name: Require the storage to be mounted before containerd and dockerd start
+  ansible.builtin.template:
+    src: storage-mounts.conf.j2
+    dest: "/etc/systemd/system/{{ item }}.d/10-storage-mounts.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - containerd.service
+    - docker.service
+  notify: Reload systemd
+
+# Also before the packages, so that the first start of containerd uses the
+# containerd root on the churn unit, and not /var/lib/containerd on /. The apt
+# module keeps a present conffile (dpkg --force-confold).
+# See ADR-s3xt (notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md).
+- name: Ensure /etc/containerd exists
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Render /etc/containerd/config.toml
+  ansible.builtin.template:
+    src: containerd-config.toml.j2
+    dest: /etc/containerd/config.toml
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Restart containerd
+    - Restart docker
+
+- name: Remove distro-provided container packages
+  ansible.builtin.apt:
+    name: "{{ docker_engine_conflicting_packages }}"
+    state: absent
+
+- name: Ensure the apt keyrings directory exists
+  ansible.builtin.file:
+    path: "{{ docker_engine_key_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install the Docker apt signing key
+  ansible.builtin.get_url:
+    url: "{{ docker_engine_key_url }}"
+    dest: "{{ docker_engine_key_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+# unattended-upgrades matches this repository by origin=Docker,label=Docker CE.
+# See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+- name: Configure the Docker apt repository
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: [deb]
+    uris: "{{ docker_engine_repo_url }}"
+    suites: "{{ ansible_distribution_release }}"
+    components: [stable]
+    architectures: "{{ docker_engine_arch_map[ansible_architecture] }}"
+    signed_by: "{{ docker_engine_key_path }}"
+    state: present
+  register: docker_engine_repo
+
+- name: Update apt cache after repository change
+  ansible.builtin.apt:
+    update_cache: true
+  when: docker_engine_repo is changed  # noqa: no-handler
+
+# --check never writes the repository above, so on a host without it apt cannot
+# find the packages and the docker unit does not exist (the daemon.json template
+# itself only reports "changed" for the missing /etc/docker). Exactly those
+# errors are tolerated, only in check mode and only when the repository or the
+# packages would change; a normal run, and --check on a provisioned host, still
+# fail.
+- name: Install Docker Engine packages
+  ansible.builtin.apt:
+    name: "{{ docker_engine_packages }}"
+    state: present
+  register: docker_engine_install
+  failed_when:
+    - docker_engine_install is failed
+    - >-
+      not (ansible_check_mode and docker_engine_repo is changed
+      and 'No package matching' in (docker_engine_install.msg | default('')))
+
+- name: Render /etc/docker/daemon.json
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+    validate: dockerd --validate --config-file=%s
+  notify: Restart docker
+
+- name: Enable and start docker
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+  register: docker_engine_service
+  failed_when:
+    - docker_engine_service is failed
+    - >-
+      not (ansible_check_mode
+      and (docker_engine_repo is changed or docker_engine_install is changed)
+      and 'Could not find the requested service' in (docker_engine_service.msg | default('')))

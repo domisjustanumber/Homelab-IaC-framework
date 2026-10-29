@@ -1,0 +1,11 @@
+{
+  "data-root": "{{ docker_engine_data_root }}",
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "{{ docker_engine_log_max_size }}", "max-file": "{{ docker_engine_log_max_file }}" },
+  "live-restore": false,
+  "userland-proxy": false,
+  "default-address-pools": [
+    { "base": "{{ docker_default_address_pool_cidr }}", "size": {{ docker_engine_address_pool_size }} }
+  ],
+  "metrics-addr": "{{ docker_engine_metrics_addr }}"
+}

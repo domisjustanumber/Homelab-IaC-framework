@@ -1,0 +1,7 @@
+---
+# The inventory names that this role checks (framework ntk9 rules 3 and 4).
+# tools/lint/check_roles.py reads these lists. They are not settings.
+apt_unattended_upgrades_required_values: []
+apt_unattended_upgrades_opt_in_values:
+  - updates_full
+  - updates_automatic_reboot

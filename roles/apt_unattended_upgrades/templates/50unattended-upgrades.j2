@@ -1,0 +1,27 @@
+// {{ ansible_managed }}
+// See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
+// See ADR-gee3 (notes/decisions/gee3-system-mail-through-msmtp.md).
+Unattended-Upgrade::Origins-Pattern {
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename},label=Debian-Security";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+        "origin=Docker,label=Docker CE";
+{% if updates_full %}
+        "origin=Debian,codename=${distro_codename}-updates";
+{% endif %}
+};
+
+Unattended-Upgrade::Remove-Unused-Dependencies "{{ 'true' if updates_autoremove else 'false' }}";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "{{ 'true' if updates_remove_kernels else 'false' }}";
+
+Unattended-Upgrade::Automatic-Reboot "{{ 'true' if updates_automatic_reboot else 'false' }}";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ updates_reboot_time }}";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
+
+{% if updates_mail | length > 0 %}
+Unattended-Upgrade::Mail "{{ updates_mail }}";
+Unattended-Upgrade::MailReport "{{ updates_mail_report }}";
+Unattended-Upgrade::Sender "{{ updates_mail_sender }}";
+{% else %}
+// No report mail: updates_mail is empty (system_mail_enabled is false).
+{% endif %}

@@ -1,0 +1,7 @@
+---
+# docker_gc_time and docker_gc_image_retention are required values. They have
+# no role default (vars/main.yml).
+# See ADR-ntk9 (notes/decisions/ntk9-generic-roles-and-host-values.md).
+
+# The path of the Docker CLI on Debian 13.
+docker_gc_docker_bin: /usr/bin/docker

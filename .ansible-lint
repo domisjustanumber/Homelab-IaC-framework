@@ -1,0 +1,15 @@
+---
+# Profile: production (strictest). See AGENTS.md section 3.
+profile: production
+
+# Not Ansible content.
+exclude_paths:
+  - .git/
+  - .github/
+  - collections/
+  - .venv/
+  - notes/
+  - tools/
+
+# Collections are pinned by requirements.yml and preinstalled in the lint image.
+offline: true

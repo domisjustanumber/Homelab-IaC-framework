@@ -18,9 +18,11 @@ This repository never holds a site value.
 | `AGENTS.md` | The single instructions file for coding agents |
 | `CLAUDE.md` | Imports this file. It has no other content. |
 | `notes/decisions/` | Decision log ([`README.md`](notes/decisions/README.md)) and its open work ([`open-work.md`](notes/decisions/open-work.md)) |
-| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py` and `check_private_data.py`. Their tests are in `tools/tests/`. |
+| `roles/` | Generic, host-agnostic Ansible roles |
+| `ansible.cfg`, `requirements.yml` | The Ansible config of the lint run, and the pinned collections |
+| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py` and `check_private_data.py`. Their tests are in `tools/tests/`. The lint container: `lint.sh` and `lint/`. |
 | `pyproject.toml` | The dev tools of the doc checks only (`pytest`, `pre-commit`) |
-| `.github/workflows/` | The doc checks and the secret scan in CI |
+| `.github/workflows/` | The doc checks, the lint suite and the secret scan in CI |
 | `plans/` | A local working folder. Git ignores it. |
 
 ## 2. Skills
@@ -45,8 +47,21 @@ Run it again in each clone after `.pre-commit-config.yaml` changes.
 Use `uv run` for project commands.
 Do not depend on an activated virtual environment.
 
-Run `uv run pytest`.
-These tests must pass.
+Ansible, `ansible-lint`, `yamllint` and `shellcheck` do not run natively on a Windows controller.
+Run them in the pinned lint container:
+
+```sh
+tools/lint.sh                      # yamllint, ansible-lint, the role checks and shellcheck
+tools/lint.sh ansible-lint roles/base
+```
+
+The image (`tools/lint/Dockerfile`) pins ansible-core, the linters and the collections from
+`requirements.yml`.
+When either changes, bump `IMAGE` in `tools/lint.sh`.
+A site builds the same image from its `framework/` submodule.
+
+Run `uv run pytest` and `tools/lint.sh`.
+These checks must pass.
 Run `uv run pytest tools/tests` to run only the doc checks.
 The doc checks test the decision log, the relative links and the private-data rule.
 Report each new test failure to the user.
@@ -54,7 +69,13 @@ Fix the failures of one root cause in one PR.
 
 ## 4. Project Rules
 
-The rules for roles, playbooks, modules and stacks are not written yet.
+Each role follows [ntk9](notes/decisions/ntk9-generic-roles-and-host-values.md).
+A role holds no host value.
+A role reads each value from the inventory of the site or from its `defaults/main.yml`.
+Each role lists its required values and its opt-in values in `vars/main.yml`.
+`tools/lint/check_roles.py` tests these lists.
+Add a `# See ADR-XXXX` comment where a line exists because of a decision, with the path of the entry.
+The rules for playbooks, modules and stacks are not written yet.
 Do not invent them. Ask the user.
 Do not change code that your task does not need.
 
