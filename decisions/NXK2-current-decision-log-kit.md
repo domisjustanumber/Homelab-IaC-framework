@@ -31,10 +31,11 @@ These rules of 0001 stay:
 
 These rules change:
 
-9. **Kit rules.** The Rules take the current kit rules: a link to a normative heading can restate a
-   rule, `recorded again` for a changed proposal, `absorbed` to `superseded by`, the `XXXX` of a
-   status must be a decided entry, the tool and script rule, and the PR citation of a commit that is
-   not on `main` yet. When a change has no PR, the edit line names the entry that caused it.
+9. **Kit rules.** The Rules take the current kit rules. A link to a heading of a normative document
+   can restate a rule. A changed proposed entry adds `recorded again` to its status line. An absorbed
+   entry can become `superseded by XXXX`. The `XXXX` of a status must be a decided entry. Each tool
+   is in `tools/` and has tests. Until a commit is on `main`, cite its PR. When a change has no PR,
+   the edit line names the entry that caused it.
 10. **Folder.** The log moves from `notes/` to `decisions/` at the repo root, with its history. A
     script of an entry goes in `decisions/scripts/`. `OLD_LOG_DIRS` in `tools/check_decision_log.py`
     names the old folder, so `--new` still reads it on old branches.
@@ -50,6 +51,7 @@ These rules change:
     `decisions` folder, `docs/`, `notes/`, `roles/` and `.claude/skills/`. A GitHub link must pin a
     full SHA, except in `docs/` and `roles/`.
 15. **Entry limit.** The limit of an entry does not count its status line and its `_Edited` lines.
+    The kit counts the full file. The site log must use the same rule.
 16. **Linters.** Do not build a Docker image to run a tool that runs on Windows. The doc checks,
     `yamllint` and `shellcheck` run from the uv venv. Ansible runs only on Linux, so on the Windows
     controller `ansible-lint` and the role checks run in the lint container. In CI they run from the

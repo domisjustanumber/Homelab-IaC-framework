@@ -161,9 +161,9 @@ The open work is in [open-work.md](open-work.md).
 - The site log uses the same rules. Each repo keeps its own copy of the rules and of the tools. A
   change of these rules needs a matching change in the site log. No file of one repo imports from the
   other repo.
-- This repo becomes public. No file holds a credential, a host name, a domain, an IP address other
-  than a documentation address (`192.0.2.0/24`), an email address, a user name or a path in a user
-  folder. The rule has no exemption.
+- This repo becomes public. No file holds a credential, a real host name, a domain, an IP address
+  other than a documentation address (`192.0.2.0/24`), an email address, a user name or a path in a
+  user folder. The rule has no exemption. A test fake can use an invented host name.
 - Write entries in ASD-STE100 Simplified Technical English. Use short sentences, the active voice and
   one instruction in each sentence. "must" is the requirement word. Technical names, field names,
   values, formulas, code and YAML stay unchanged.

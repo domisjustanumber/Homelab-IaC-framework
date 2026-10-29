@@ -20,7 +20,7 @@ This repository never holds a site value.
 | `decisions/` | Decision log ([`README.md`](decisions/README.md)) and its open work ([`open-work.md`](decisions/open-work.md)) |
 | `roles/` | Generic, host-agnostic Ansible roles |
 | `ansible.cfg`, `requirements.yml` | The Ansible config of the lint run, and the pinned collections |
-| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint suite: `lint.sh`, and the lint container in `lint/`. |
+| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint suite: `lint.sh`, and the lint container in `lint/`. `tools/tests/` also tests the file checks of `lint/check_roles.py`. |
 | `pyproject.toml`, `uv.lock` | The dev tools (`pytest`, `pre-commit`, `yamllint`, `shellcheck`) and the `ansible` group of the lint container and CI |
 | `.github/workflows/` | The doc checks, the lint suite and the secret scan in CI |
 | `plans/` | A local working folder. Git ignores it. |
@@ -80,6 +80,7 @@ These checks must pass.
 Run `uv run pytest tools/tests` to run only the doc checks.
 The doc checks test the decision log, the relative links, the private-data rule and the
 AI-attribution check.
+They also test the file checks of `tools/lint/check_roles.py`, with a fake for the Ansible run.
 Report each new test failure to the user.
 Fix the failures of one root cause in one PR.
 
@@ -189,6 +190,8 @@ Do not write these in a tracked file, a commit message or a PR body:
 In prose and examples, use a documentation address (`192.0.2.0/24`) or name the variable.
 Use paths relative to the repository, for example `decisions/README.md`.
 Give a measurement as a summary with its tool and its version.
+A report field or a test fake can contain a hostname.
+In this repo, it must be an invented name, for example `myhost`.
 Text from `plans/` must obey these rules before it goes into a tracked file.
 If you find private data in a tracked file, remove it with a redaction edit.
 Then tell the user, because git history keeps the data.
