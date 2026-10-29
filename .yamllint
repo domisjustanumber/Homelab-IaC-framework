@@ -11,7 +11,7 @@ rules:
     max: 160
     level: warning
   commas:
-    max-spaces-after: -1   # aligned flow mappings in host_vars
+    max-spaces-after: -1   # aligned flow mappings in an inventory
   comments:
     min-spaces-from-content: 1
   comments-indentation: disable

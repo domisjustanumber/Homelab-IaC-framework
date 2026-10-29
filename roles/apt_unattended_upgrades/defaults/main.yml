@@ -10,7 +10,7 @@ updates_reboot_time: "03:30"  # noqa: var-naming[no-role-prefix]
 # "HH:MM" moves apt-daily-upgrade.timer. "" keeps the Debian timer.
 # See ADR-eq0z (notes/decisions/eq0z-unattended-upgrades-and-reboots.md).
 updates_upgrade_time: ""  # noqa: var-naming[no-role-prefix]
-updates_autoremove: true  # noqa: var-naming[no-role-prefix]
+updates_autoremove: false  # noqa: var-naming[no-role-prefix]
 updates_remove_kernels: true  # noqa: var-naming[no-role-prefix]
 # The mail values come from the system_mail_* values, only when system_mail_enabled is true.
 # Otherwise updates_mail is empty, the system_mail_* values can be absent, and the template

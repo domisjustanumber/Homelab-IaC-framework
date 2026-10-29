@@ -24,7 +24,8 @@ docker_engine_arch_map:
 docker_engine_log_max_size: 50m
 docker_engine_log_max_file: "3"
 docker_engine_address_pool_size: 24
-docker_engine_metrics_addr: 127.0.0.1:9323
+# Empty: no metrics listener (framework ntk9 rule 2, an opt-in that is off).
+docker_engine_metrics_addr: ""
 
 # Both stores are on the churn unit. On a VM host, the churn disk is mounted at
 # the data-root. The containerd root is a folder in the data-root that dockerd

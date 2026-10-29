@@ -7,8 +7,9 @@ It also installs `status-email@.service` for `OnFailure=`.
 The role purges other mail transport agents first.
 See [gee3](../../notes/decisions/gee3-system-mail-through-msmtp.md).
 
-The secrets role renders the SMTP password file `/etc/msmtp-password`.
-It must run before this role.
+The secrets role of [0004](../../notes/decisions/0004-secrets-split-by-domain.md) (proposed) renders
+the SMTP password file `/etc/msmtp-password`. This repository does not hold that role yet. Until it
+does, the site must render the file before this role runs.
 `/etc/msmtprc` holds no password.
 
 The playbook applies this role only when `system_mail_enabled` is on

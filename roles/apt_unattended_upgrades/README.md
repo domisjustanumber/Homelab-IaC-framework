@@ -28,7 +28,7 @@ The inventory of the site can override each default.
 | `updates_automatic_reboot` | `false` | Opt-in. Set `Automatic-Reboot`. |
 | `updates_reboot_time` | `"03:30"` | `Automatic-Reboot-Time` |
 | `updates_upgrade_time` | `""` | `HH:MM` installs the timer drop-in. `""` removes it. |
-| `updates_autoremove` | `true` | `Remove-Unused-Dependencies` |
+| `updates_autoremove` | `false` (the Debian default) | `Remove-Unused-Dependencies` |
 | `updates_remove_kernels` | `true` | `Remove-Unused-Kernel-Packages` |
 | `updates_mail` | `system_mail_admin`, or `""` | `Mail`. `""` writes no `Mail` lines. |
 | `updates_mail_report` | `system_mail_report` | `MailReport` |

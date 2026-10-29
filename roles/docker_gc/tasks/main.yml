@@ -12,7 +12,7 @@
   loop:
     - docker-gc.service
     - docker-gc.timer
-  notify: Reload systemd
+  notify: Reload systemd for docker_gc
   register: docker_gc_units
 
 - name: Apply systemd changes before enabling the timer

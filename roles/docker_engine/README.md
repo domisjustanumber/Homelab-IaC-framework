@@ -27,7 +27,7 @@ A value that is not set, or that is `CHANGEME` or `CONFIRM`, stops the run.
 | `docker_engine_repo_url`, `docker_engine_key_url`, `docker_engine_key_path`, `docker_engine_arch_map` | the apt repository |
 | `docker_engine_log_max_size`, `docker_engine_log_max_file` | `50m`, `3` (`json-file` log options) |
 | `docker_engine_address_pool_size` | `24` |
-| `docker_engine_metrics_addr` | `127.0.0.1:9323` |
+| `docker_engine_metrics_addr` | `""`: no metrics listener. Set an address, for example `127.0.0.1:9323`, to turn it on. |
 
 The containerd root and the data-root must be on the churn unit
 ([s3xt](../../notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md) rule 3).
@@ -37,7 +37,7 @@ The role uses the containerd of the `containerd.io` package, so `containerd-root
 
 ## Handlers
 
-- `Reload systemd` runs when a drop-in changes.
+- `Reload systemd for docker_engine` runs when a drop-in changes.
 - `Restart containerd` runs when `config.toml` changes.
 - `Restart docker` runs when `config.toml` or `daemon.json` changes.
   `live-restore` is off, so a restart stops each container

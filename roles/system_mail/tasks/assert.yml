@@ -3,6 +3,7 @@
 - name: Assert the required values
   ansible.builtin.assert:
     that:
+      - lookup('ansible.builtin.vars', item, default='') is not none
       - lookup('ansible.builtin.vars', item, default='') | string | length > 0
       - lookup('ansible.builtin.vars', item, default='') | string is not search('CHANGEME|CONFIRM')
     fail_msg: "{{ item }} is required. Set it in the inventory of the site (framework ntk9)."

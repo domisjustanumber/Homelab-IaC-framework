@@ -27,7 +27,7 @@
   loop:
     - containerd.service
     - docker.service
-  notify: Reload systemd
+  notify: Reload systemd for docker_engine
 
 # Also before the packages, so that the first start of containerd uses the
 # containerd root on the churn unit, and not /var/lib/containerd on /. The apt

@@ -2,7 +2,7 @@
 # Handlers run in the order of this file. A changed drop-in takes effect at the
 # next start of the unit (boot or a restart below). A reload only makes systemd
 # read it.
-- name: Reload systemd
+- name: Reload systemd for docker_engine
   ansible.builtin.systemd_service:
     daemon_reload: true
 

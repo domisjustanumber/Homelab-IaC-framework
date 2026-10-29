@@ -26,7 +26,7 @@ The role asserts the required values at the start
 
 ## Handlers
 
-`Reload systemd` runs `systemctl daemon-reload` when a unit file changes.
+`Reload systemd for docker_gc` runs `systemctl daemon-reload` when a unit file changes.
 
 ## Retention
 

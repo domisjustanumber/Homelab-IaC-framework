@@ -66,6 +66,7 @@ def check_role(role_dir):
     cases = {
         "empty inventory": {},
         "placeholders": {name: "CHANGEME" for name in required},
+        "empty values": {name: None for name in required},
     }
     for case, extra_vars in cases.items():
         code, output = run_assertions(role, extra_vars)

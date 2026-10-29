@@ -6,6 +6,7 @@
   "userland-proxy": false,
   "default-address-pools": [
     { "base": "{{ docker_default_address_pool_cidr }}", "size": {{ docker_engine_address_pool_size }} }
-  ],
-  "metrics-addr": "{{ docker_engine_metrics_addr }}"
+  ]{% if docker_engine_metrics_addr %},
+  "metrics-addr": "{{ docker_engine_metrics_addr }}"{% endif %}
+
 }
