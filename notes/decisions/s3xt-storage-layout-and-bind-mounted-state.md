@@ -1,6 +1,6 @@
 # s3xt — Docker hosts keep state apart from image churn, behind enforced mounts
 
-**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-29 (user); superseded by [cvm2](cvm2-storage-layout-containerd-root-by-flag.md), 2026-10-29 (user).
 
 This entry restates the generic rules of site 0034 for each Docker host. A VM host also follows
 [msam](msam-docker-host-vm-disks.md). A site entry restates the site values of site 0034 and

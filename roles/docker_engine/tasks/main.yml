@@ -5,7 +5,7 @@
 # Before the packages: their postinst starts containerd and dockerd. With these
 # drop-ins, neither daemon starts at boot without its storage, so a unit that
 # failed to mount stops the stack. The stack does not start empty on /.
-# See ADR-s3xt (notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md).
+# See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
 - name: Ensure the drop-in directories exist
   ansible.builtin.file:
     path: "/etc/systemd/system/{{ item }}.d"
@@ -30,25 +30,19 @@
   notify: Reload systemd for docker_engine
 
 # Also before the packages, so that the first start of containerd uses the
-# containerd root on the churn unit, and not /var/lib/containerd on /. The apt
-# module keeps a present conffile (dpkg --force-confold).
-# See ADR-s3xt (notes/decisions/s3xt-storage-layout-and-bind-mounted-state.md).
-- name: Ensure /etc/containerd exists
-  ansible.builtin.file:
-    path: /etc/containerd
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Render /etc/containerd/config.toml
+# containerd root on the churn unit, and not /var/lib/containerd on /. The flag
+# leaves /etc/containerd/config.toml, a conffile of containerd.io, as shipped,
+# so unattended upgrades never hold the package back.
+# See ADR-cvm2 (notes/decisions/cvm2-storage-layout-containerd-root-by-flag.md).
+- name: Set the containerd root with a flag
   ansible.builtin.template:
-    src: containerd-config.toml.j2
-    dest: /etc/containerd/config.toml
+    src: containerd-root.conf.j2
+    dest: /etc/systemd/system/containerd.service.d/20-containerd-root.conf
     owner: root
     group: root
     mode: "0644"
   notify:
+    - Reload systemd for docker_engine
     - Restart containerd
     - Restart docker
 

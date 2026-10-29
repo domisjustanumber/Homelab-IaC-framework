@@ -26,10 +26,10 @@ These entries are `accepted` or `evidence`.
 | [eq0z](eq0z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | accepted |
 | [gee3](gee3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | accepted |
 | [apg1](apg1-daily-docker-gc.md) | Daily Docker GC with anonymous-only volume pruning | accepted |
-| [s3xt](s3xt-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | accepted |
 | [msam](msam-docker-host-vm-disks.md) | A Docker host VM has three disks, ext4 by UUID, and all three are in the backup | accepted |
 | [xq9a](xq9a-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | accepted |
 | [ntk9](ntk9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
+| [cvm2](cvm2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
 
 ### Proposed
 
