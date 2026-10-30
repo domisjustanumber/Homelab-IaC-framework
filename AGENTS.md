@@ -91,6 +91,8 @@ A role reads each value from the inventory of the site or from its `defaults/mai
 Each role lists its required values and its opt-in values in `vars/main.yml`.
 `tools/lint/check_roles.py` tests these lists.
 Add a `# See ADR-XXXX` comment where a line exists because of a decision, with the path of the entry.
+In a template that a role writes to a host, write the ID only, for example `# See ADR-CVM2`
+([ADR-SAB7](decisions/entries/SAB7-host-templates-cite-decisions-by-id.md)).
 The rules for playbooks, modules and stacks are not written yet.
 Do not invent them. Ask the user.
 Do not change code that your task does not need.
