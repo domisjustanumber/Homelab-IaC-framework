@@ -68,14 +68,16 @@ The open work is in [open-work.md](open-work.md).
 - An absorb document is one of these: `AGENTS.md`, the skills, the Rules of this file with
   [template.md](template.md), and the docstring of a tool in `tools/` for the rules that it checks.
   An accepted entry is absorbed when one absorb document states all of its rules.
-- The entry that supersedes an old entry restates each rule of the old entry that stays. A link can
-  restate a rule. The link must go to a heading of an absorb document, and that heading must state
-  the rule. The commit that changes the text under such a heading cites its own entry next to the
-  changed rule.
+- The entry that supersedes an old entry names it under its status line, as
+  `Supersedes [ADR-XXXX](XXXX-<slug>.md) in full.`, and restates each rule of the old entry that
+  stays. A link can restate a rule. The link must go to a heading of an absorb document, and that
+  heading must state the rule. The commit that changes the text under such a heading cites its own
+  entry next to the changed rule. A later entry that changes a rule that the linking entry states in
+  its own text supersedes the linking entry in full.
 - Only these status changes are allowed: `proposed` to `accepted` or `rejected`; `accepted` to
   `superseded by XXXX`, `absorbed into <path>#<anchor>` or `done`; `absorbed into <path>#<anchor>`
-  to `superseded by XXXX`; and `evidence` to `evidence; used by XXXX`, when an accepted entry cites
-  the `evidence` entry for its decision. `done` is for an accepted entry that records a one-off
+  to `superseded by XXXX`, when a new entry changes one of its rules; and `evidence` to
+  `evidence; used by XXXX`, when an accepted entry cites the `evidence` entry for its decision. `done` is for an accepted entry that records a one-off
   action, with no rule that stays, when the action is complete. Each status change adds its date and
   the PR that made it (or the entry, when the change has no PR). In the same change, change the
   status in the index and move the row to the table for the new status.
@@ -89,7 +91,9 @@ The open work is in [open-work.md](open-work.md).
 - Put long evidence in a tracked file next to the entry, and link to it. A PR can lower a limit of
   `tools/check_decision_log.py`. A PR that raises a limit must add an entry.
 - An ID changes only on a `re-ID:` line of `tools/check_decision_log.py`, to the ID of a new `--new`
-  run.
+  run. Rename the file, and change the ID in its heading and in its index row. Find the citations
+  with `git grep -n -i -E "XXXX|XXXX-"`, and repair each one. Ask the user before you change a
+  PR title or a PR body.
 - Until a commit is on `main`, cite its PR number and the file path, not its SHA. The `ADR-` prefix
   is for citations only: a file name, a heading, an index row, a status line and a YAML value hold
   the bare ID. Write an ID in a YAML value in quotes. Cite a provisional entry of another repo by the
@@ -100,8 +104,7 @@ The open work is in [open-work.md](open-work.md).
 - A site entry that holds both generic rules and site values splits: an entry of this log restates
   the generic rules, and a new site entry restates the site values and supersedes the old site entry
   in full. An entry of this log that supersedes a site entry states it under its status line, for
-  example `Supersedes site ADR-0013 in full.` The supersession of an entry of this log is only in
-  the status line of the old entry.
+  example `Supersedes site ADR-0013 in full.`, with no link.
 - A `**Depends on:**` line names a site entry as `site ADR-<ID>`, with no permalink.
 - The Evidence section of an entry cites the upstream docs or code for each claim about them.
 - The site log uses the same rules. Each repo keeps its own copy of the rules and of the tools. A

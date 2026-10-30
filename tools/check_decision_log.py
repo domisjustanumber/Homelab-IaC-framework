@@ -71,6 +71,19 @@ allowed edit line then never makes a full entry too long.
 All-digit entries up to ``LAST_UNLIMITED_ENTRY`` keep their length, because the body of an old entry
 does not change. An entry with ``renumber from XXXX`` or ``re-ID from XXXX`` keeps the exemption of
 XXXX. Standard library and the git CLI only, with no import from another repo (decision 0001).
+
+The tables and their status forms (``STATUS_FORMS``): Active (``accepted``, ``evidence``) and
+Proposed (``proposed``) in ``README.md``, and Historical (``rejected``, ``superseded by XXXX``,
+``absorbed into <path>#<anchor>``, ``evidence; used by XXXX``, ``done``) in ``historical.md``. A
+Status cell has only a status form of its table. The ``XXXX`` of ``superseded by`` and ``used by``
+is an indexed entry that is not ``proposed`` or ``rejected``. A row is
+``| [XXXX](entries/XXXX-<slug>.md) | Decision | Status |``. A Proposed row also has a Section cell
+before the Status cell: the section or area of the change as an ID in backticks, or ``none``. The
+limits of this log: 14,000 characters for ``README.md``, 20,000 for ``open-work.md``, 6,000 for
+each entry, 220,000 for the read path and 160 for a Decision cell (decision NXK2).
+
+The site log has its own copy of this checker. This copy has no all-digit entries without a limit
+(``LAST_UNLIMITED_ENTRY`` is 0) and no status form for a supersession by another repo.
 """
 
 from __future__ import annotations

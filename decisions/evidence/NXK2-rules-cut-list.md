@@ -27,7 +27,7 @@ kit version, from the change before it.
 | A link to a heading can restate a rule | Kept |
 | The commit that changes a linked heading cites its entry | Kept |
 | A change under a linked heading does not supersede the linking entry | Intro |
-| A change of a rule that an entry states in its own text supersedes it in full | Intro |
+| A change of a rule that an entry states in its own text supersedes it in full | Kept |
 | The allowed status changes, with date and PR | Kept |
 | An absorbed entry becomes `superseded by XXXX` | Kept (allowed status change) |
 | Change the index row in the same change | Kept |
@@ -59,8 +59,8 @@ kit version, from the change before it.
 | Create the file immediately; the index row at the end of its table, in the same change | `AGENTS.md` section 5 |
 | The pre-push hook and the collision verdicts | Docstring |
 | An ID changes only on a `re-ID:` line | Kept |
-| Rename the file, the heading and the index row on a re-ID; repair the citations | Docstring; Kept (edit rule) |
-| Ask the user before a PR title or body change | [`AGENTS.md` section 6](../../AGENTS.md#6-git-rules) |
+| Rename the file, the heading and the index row on a re-ID; repair the citations | Kept |
+| Ask the user before a PR title or body change | Kept; [`AGENTS.md` section 6](../../AGENTS.md#6-git-rules) |
 | The re-ID and citation-repair lines only on an entry on `main` | Kept |
 | Do not reuse an ID; no two index rows with one ID | Docstring |
 | What a tool is; what a script is; where each one goes | `AGENTS.md` section 5 |
@@ -89,7 +89,7 @@ kit version, from the change before it.
 | Rule | Place now |
 |---|---|
 | The `Supersedes site XXXX in full.` line | Kept (split rule) |
-| The Supersedes bullet: the status line of the old entry records a supersession in this log | Kept (split rule) |
+| The Supersedes bullet: the new entry names the old entry under its status line | Kept (supersession rule; split rule for a site entry) |
 | The source can be `agent` | `AGENTS.md` section 5 (an agent writes `proposed`) |
 | A `**Depends on:**` permalink only for a public repo; no link for a site entry | Kept; `AGENTS.md` section 5 |
 | The script of an entry in the `scripts/` folder of the log | `template.md`; `AGENTS.md` section 5 (`decisions/scripts/`) |
