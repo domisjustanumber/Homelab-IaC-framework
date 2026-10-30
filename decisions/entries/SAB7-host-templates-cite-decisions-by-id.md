@@ -1,6 +1,6 @@
 # SAB7 — Host templates cite a decision by its ID only
 
-**Status:** proposed, 2026-10-29 (agent).
+**Status:** proposed, 2026-10-29 (agent); accepted, 2026-10-29 (user).
 
 Its mirror is site ADR-HQ6H.
 
