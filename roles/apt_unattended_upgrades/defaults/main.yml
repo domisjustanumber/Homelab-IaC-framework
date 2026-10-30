@@ -1,22 +1,22 @@
 ---
 # Role defaults (framework NTK9 rule 2). The inventory of the site can override each one.
 # The updates_* names have no role prefix. They are the inventory interface of the role.
-# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
+# See ADR-EQ0Z (decisions/entries/EQ0Z-unattended-upgrades-and-reboots.md).
 updates_full: false  # noqa: var-naming[no-role-prefix]
 # A host must opt in to unattended reboots.
-# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
+# See ADR-EQ0Z (decisions/entries/EQ0Z-unattended-upgrades-and-reboots.md).
 updates_automatic_reboot: false  # noqa: var-naming[no-role-prefix]
 updates_reboot_time: "03:30"  # noqa: var-naming[no-role-prefix]
 # "HH:MM" moves apt-daily-upgrade.timer. "" keeps the Debian timer.
-# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
+# See ADR-EQ0Z (decisions/entries/EQ0Z-unattended-upgrades-and-reboots.md).
 updates_upgrade_time: ""  # noqa: var-naming[no-role-prefix]
 updates_autoremove: false  # noqa: var-naming[no-role-prefix]
 updates_remove_kernels: true  # noqa: var-naming[no-role-prefix]
 # The mail values come from the system_mail_* values, only when system_mail_enabled is true.
 # Otherwise updates_mail is empty, the system_mail_* values can be absent, and the template
 # writes no Mail lines.
-# See ADR-EQ0Z (decisions/EQ0Z-unattended-upgrades-and-reboots.md).
-# See ADR-GEE3 (decisions/GEE3-system-mail-through-msmtp.md).
+# See ADR-EQ0Z (decisions/entries/EQ0Z-unattended-upgrades-and-reboots.md).
+# See ADR-GEE3 (decisions/entries/GEE3-system-mail-through-msmtp.md).
 updates_mail: "{{ system_mail_admin if system_mail_enabled | default(false) | bool else '' }}"  # noqa: var-naming[no-role-prefix]
 updates_mail_report: "{{ system_mail_report | default('on-change') }}"  # noqa: var-naming[no-role-prefix]
 updates_mail_sender: "{{ (hostname ~ ' Unattended-Updates <' ~ system_mail_from ~ '>') if updates_mail else '' }}"  # noqa: var-naming[no-role-prefix]

@@ -94,7 +94,7 @@
 
 # A public key is not a secret. A lookup runs on the controller also in --check,
 # so the task is skipped in --check: a check run then needs no 1Password access.
-# See ADR-BQXN (decisions/BQXN-debian-hosts-and-the-base-role.md).
+# See ADR-BQXN (decisions/entries/BQXN-debian-hosts-and-the-base-role.md).
 - name: Install admin user's authorized key from 1Password
   ansible.posix.authorized_key:
     user: "{{ admin_user }}"

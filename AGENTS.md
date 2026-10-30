@@ -28,8 +28,7 @@ This repository never holds a site value.
 ## 2. Skills
 
 Load the skill that matches the task.
-If your agent does not support skills, read the skill file.
-Each skill is in `.claude/skills/<skill>/SKILL.md`.
+If your agent does not support skills, read the file `.claude/skills/<skill>/SKILL.md`.
 The rules in this file also apply.
 
 This repository has no skills yet.
@@ -50,7 +49,7 @@ Do not depend on an activated virtual environment.
 Do not build a Docker image to run a tool that runs on Windows.
 Run it from the uv venv with `uv run`.
 The doc checks, `yamllint` and `shellcheck` run from the uv venv
-([ADR-NXK2](decisions/NXK2-current-decision-log-kit.md)).
+([ADR-NXK2](decisions/entries/NXK2-current-decision-log-kit.md)).
 Ansible runs only on Linux.
 Do not run `uv run ansible-*` on the Windows controller.
 On the Windows controller, the Ansible checks run in the pinned lint container:
@@ -86,7 +85,7 @@ Fix the failures of one root cause in one PR.
 
 ## 4. Project Rules
 
-Each role follows [ADR-NTK9](decisions/NTK9-generic-roles-and-host-values.md).
+Each role follows [ADR-NTK9](decisions/entries/NTK9-generic-roles-and-host-values.md).
 A role holds no host value.
 A role reads each value from the inventory of the site or from its `defaults/main.yml`.
 Each role lists its required values and its opt-in values in `vars/main.yml`.
@@ -99,63 +98,51 @@ Do not change code that your task does not need.
 ## 5. Decision Log
 
 Read [`decisions/README.md`](decisions/README.md) and
-[`decisions/open-work.md`](decisions/open-work.md) before you change a role, a
-playbook, a module, a stack or these instructions.
-The log records decisions and the evidence behind them.
-Then read the Active entries of the index that apply to your task.
-Read a Proposed entry only for work in its section, or when a skill tells you to.
-Read an entry of [`historical.md`](decisions/historical.md) only to find the reason for a
-decision.
+[`open-work.md`](decisions/open-work.md) before you change a role, a playbook, a module, a stack or
+these instructions.
+This repository has no modules, so it has one log, in `decisions/`.
+The log has a `README.md` with an Active table, a Proposed table and `## Open work`, a
+`historical.md`, an `open-work.md`, `template.md` and its entry files in `entries/`.
+Each entry goes in `decisions/entries/`.
+A tool is code that a test, a hook, a CI job, a skill or a workflow step runs, or code that writes a
+tracked file. It is in `tools/`. It has tests.
+A script made the evidence for an entry or did its one-off job, and the entry names it. It is in
+`decisions/scripts/`. Its own tests, if any, are in `decisions/scripts/tests/`.
+A script does not change after its entry is decided. When a step starts to run it, move it to
+`tools/` and add a test.
+The [Rules](decisions/README.md#rules) of the index give the allowed edits, the status changes and
+the rules that no tool checks. `tools/check_decision_log.py` checks the tables, the IDs and the
+limits.
 Add one entry for each new decision or measurement.
 Write a new entry as `proposed`.
 Only the user changes an entry to `accepted` or `rejected`.
-An entry has a random upper-case ID of 4 characters, for example `K7M2`.
 Before you add an entry, run `git fetch` when you can.
-Then run `uv run python tools/check_decision_log.py --new`.
-Give the entry the ID of the `new:` line.
+Get its ID from `uv run python tools/check_decision_log.py --new`.
 Create the entry file immediately.
-Add its index row at the end of the table for its status, in the same PR.
-The pre-push hook runs `uv run python tools/check_decision_log.py --collisions`.
-It stops the push when an entry of this tree must change its ID.
-Act on each `re-ID:` line. The index [Rules](decisions/README.md#rules) give the steps.
-Do not change an ID for a different reason.
-Do not keep two index rows with one ID when you resolve a merge conflict.
-Do not rewrite the body of an entry that is not `proposed`.
-Four edits are allowed: a link or anchor repair, a typo fix that keeps the meaning, the redaction of
-private data, and a change of ID with the repair of its citations.
-Each of these edits adds an `_Edited_` line with the date and the PR.
-When a change has no PR, name the entry that caused the edit in place of the PR.
-To change a decision, add a new entry. It restates the rules that stay, in full or by a link to a
-heading that states the rule, and supersedes the old entry in full.
-A later change under that heading does not supersede the linking entry.
-Do not supersede a part of an entry.
-Keep the log inside its limits. `uv run pytest tools/tests` checks them.
-Cite tracked files and decision entries with relative links.
-Cite a commit, or the code of another public repository, with a GitHub permalink.
-The permalink must pin a full SHA on the default branch of that repository.
-Do not put dated status lines in this file. Put them in the open work or in an entry.
-Do not cite or link to `plans/`.
-Cite an entry of this repository as a Markdown link with `ADR-<ID>` as the link text.
-Write the ID in upper case.
+Add its index row at the end of the table for its status, in the same change.
+End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
+Cite each entry as a Markdown link with `ADR-<ID>` as the link text, in upper case, for example
+[ADR-0001](decisions/entries/0001-decision-log-agents-md-and-private-data.md).
 This rule applies to each text that you write: a tracked file, a plan, a PR body and a reply to the
 user. In a reply or a plan, the path is relative to the repository root or to the file.
-Write the repository name before an entry ID of another repository, for example `site 0013`.
-Cite an entry of the site log as `site XXXX`, with no link.
-Never link to the site repository, and never name its location.
-An entry of another public repository can be on the default branch of that repository.
-Then also link it with a GitHub permalink that pins a full SHA.
-An ID without a repository name is an entry of this repository.
-Restate a site rule here only when framework code or framework documents cite it.
-Do not use the prefix in a file name, an entry heading, an index row, a status line or a YAML value.
-End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
 A commit message cannot hold a working link. In the commit body, write `ADR-<ID>` with no link.
-Cite a provisional entry of another repository by the repository name, the PR number and the slug.
-Do not import a file, a test or a tool from another repository.
+Cite a tracked file with a relative link.
+Cite a commit, or the code of another public repository, with a GitHub permalink that pins a full
+SHA on the default branch of that repository.
+Cite an entry of the site log with the repository name and `ADR-<ID>`, for example
+`site ADR-0013`, with no link.
+Never link to the site repository, and never name its location.
+Older text that cites a site entry as `site 0013` stays valid.
+Cite an entry of another public repository with the repository name and `ADR-<ID>`. Also link it
+with a full-SHA permalink when the entry is on the default branch of that repository
+(see the [Rules](decisions/README.md#rules)).
+Restate a site rule here only when framework code or framework documents cite it.
 
 ## 6. Git Rules
 
-- `plans/` is a local working folder. Git ignores it. Do not commit it
-  ([ADR-0001](decisions/0001-decision-log-agents-md-and-private-data.md)).
+- `plans/` is a local working folder. Git ignores it. Do not commit it. Do not cite or link to
+  `plans/`, or cite the content of a plan
+  ([ADR-0001](decisions/entries/0001-decision-log-agents-md-and-private-data.md)).
 - Do not push to a git remote without the approval of the user. One approval for a PR covers its
   push, its draft PR and its description.
 - Ask the user before any other action that is visible outside this machine, for example a PR
@@ -176,7 +163,7 @@ Write the summary in the message text, not only in the tool description.
 ## 8. Private Data
 
 This repository is public, or it can become public. Git history is permanent
-([ADR-0001](decisions/0001-decision-log-agents-md-and-private-data.md)).
+([ADR-0001](decisions/entries/0001-decision-log-agents-md-and-private-data.md)).
 The rule has no exemption. No folder may hold host values.
 Do not write these in a tracked file, a commit message or a PR body:
 
@@ -187,25 +174,19 @@ Do not write these in a tracked file, a commit message or a PR body:
 - a private URL, or an IP address that is not a documentation address;
 - a raw dump of `env`, `pip list`, `docker inspect` or `op item get`.
 
-In prose and examples, use a documentation address (`192.0.2.0/24`) or name the variable.
-Use paths relative to the repository, for example `decisions/README.md`.
-Give a measurement as a summary with its tool and its version.
-A report field or a test fake can contain a hostname.
-In this repo, it must be an invented name, for example `myhost`.
-Text from `plans/` must obey these rules before it goes into a tracked file.
-If you find private data in a tracked file, remove it with a redaction edit.
-Then tell the user, because git history keeps the data.
-Also revoke a leaked credential.
-
-`uv run pytest tools/tests` runs `tools/check_private_data.py`.
-To also block a hostname or a user name, put it in the file `.private-terms` in the repository root.
-Git ignores that file. Do not commit it.
-The pre-commit hook runs `gitleaks` and the private-data check.
-The pre-push hook runs the collision check of the decision-log IDs.
-The commit-msg hook runs `tools/check_ai_attribution.py`. It warns about AI attribution
-([section 6](#6-git-rules)). It does not stop the commit.
-If you are an AI agent and you see this warning, tell the user.
-`.github/workflows/secrets.yml` runs `gitleaks` on each push and PR.
-`.gitleaks.toml` holds the reviewed false positives.
-Turn on secret scanning and push protection for a private repository on the day that it becomes
-public.
+- In prose and examples, use a documentation address (`192.0.2.0/24`) or name the variable.
+- Use paths relative to the repository, for example `decisions/README.md`.
+- Give a measurement as a summary with its tool and its version.
+- A report field or a test fake can contain a hostname. In this repo, it must be an invented name,
+  for example `myhost`.
+- Text from `plans/` must obey these rules before it goes into a tracked file.
+- To also block a hostname or a user name, put it in `.private-terms` in the repository root. Git
+  ignores that file. Do not commit it.
+- If you find private data in a tracked file, remove it with a redaction edit. Then tell the user,
+  because git history keeps the data. Also revoke a leaked credential.
+- The pre-commit hook runs `gitleaks` and `tools/check_private_data.py`. CI runs `gitleaks` on each
+  push and PR. `.gitleaks.toml` holds the reviewed false positives.
+- The commit-msg hook warns about AI attribution. If you are an AI agent and you see
+  this warning, tell the user.
+- Turn on secret scanning and push protection for a private repository on the day that it becomes
+  public.

@@ -33,7 +33,7 @@ A value that is not set, or that is `CHANGEME` or `CONFIRM`, stops the run.
 | `docker_engine_metrics_addr` | `""`: no metrics listener. Set an address, for example `127.0.0.1:9323`, to turn it on. |
 
 The containerd root and the data-root must be on the churn unit
-([CVM2](../../decisions/CVM2-storage-layout-containerd-root-by-flag.md) rule 3).
+([CVM2](../../decisions/entries/CVM2-storage-layout-containerd-root-by-flag.md) rule 3).
 `dockerd` uses `<data-root>/containerd` only for a containerd that it starts itself.
 The role uses the containerd of the `containerd.io` package, so `containerd-root` is not used by `dockerd`.
 `config.toml` is a conffile of `containerd.io`. A changed conffile can hold the package back in unattended upgrades, so the role sets the root with a flag.
@@ -44,13 +44,13 @@ The role uses the containerd of the `containerd.io` package, so `containerd-root
 - `Restart containerd` runs when the containerd root drop-in changes.
 - `Restart docker` runs when the containerd root drop-in or `daemon.json` changes.
   `live-restore` is off, so a restart stops each container
-  ([EQ0Z](../../decisions/EQ0Z-unattended-upgrades-and-reboots.md) rule 6).
+  ([EQ0Z](../../decisions/entries/EQ0Z-unattended-upgrades-and-reboots.md) rule 6).
 
 ## Decisions
 
-- [CVM2](../../decisions/CVM2-storage-layout-containerd-root-by-flag.md): the containerd root,
+- [CVM2](../../decisions/entries/CVM2-storage-layout-containerd-root-by-flag.md): the containerd root,
   the data-root and the drop-ins.
-- [EQ0Z](../../decisions/EQ0Z-unattended-upgrades-and-reboots.md): `live-restore` is off.
+- [EQ0Z](../../decisions/entries/EQ0Z-unattended-upgrades-and-reboots.md): `live-restore` is off.
   The Docker apt origin must stay `origin=Docker,label=Docker CE`, because unattended upgrades match it.
-- [0003](../../decisions/0003-controller-pushes-stacks.md) (proposed): the play deploys stacks
+- [0003](../../decisions/entries/0003-controller-pushes-stacks.md) (proposed): the play deploys stacks
   with `community.docker.docker_compose_v2`, so the role installs `docker-compose-plugin`.

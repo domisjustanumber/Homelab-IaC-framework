@@ -5,15 +5,15 @@ msmtp gives `/usr/sbin/sendmail`, and it relays all mail to an SMTP relay.
 The role writes `/etc/msmtprc` and `/etc/aliases`.
 It also installs `status-email@.service` for `OnFailure=`.
 The role purges other mail transport agents first.
-See [GEE3](../../decisions/GEE3-system-mail-through-msmtp.md).
+See [GEE3](../../decisions/entries/GEE3-system-mail-through-msmtp.md).
 
-The secrets role of [0004](../../decisions/0004-secrets-split-by-domain.md) (proposed) renders
+The secrets role of [0004](../../decisions/entries/0004-secrets-split-by-domain.md) (proposed) renders
 the SMTP password file `/etc/msmtp-password`. This repository does not hold that role yet. Until it
 does, the site must render the file before this role runs.
 `/etc/msmtprc` holds no password.
 
 The playbook applies this role only when `system_mail_enabled` is on
-([NTK9](../../decisions/NTK9-generic-roles-and-host-values.md)).
+([NTK9](../../decisions/entries/NTK9-generic-roles-and-host-values.md)).
 
 ## Inventory values
 

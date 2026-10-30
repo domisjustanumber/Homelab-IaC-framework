@@ -3,7 +3,7 @@
   ansible.builtin.import_tasks: assert.yml
 
 # The secrets role renders /etc/msmtp-password before this role runs.
-# See ADR-GEE3 (decisions/GEE3-system-mail-through-msmtp.md).
+# See ADR-GEE3 (decisions/entries/GEE3-system-mail-through-msmtp.md).
 - name: Purge conflicting mail transport agents
   ansible.builtin.apt:
     name: "{{ system_mail_conflicting_packages }}"

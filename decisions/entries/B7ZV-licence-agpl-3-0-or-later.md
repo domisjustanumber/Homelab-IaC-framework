@@ -6,7 +6,7 @@
 
 1. **Licence.** The framework is licensed under the GNU Affero General Public License, version 3 or
    later (SPDX `AGPL-3.0-or-later`).
-2. **Licence file.** [`LICENSE`](../LICENSE) holds the full text of the AGPL version 3, unchanged.
+2. **Licence file.** [`LICENSE`](../../LICENSE) holds the full text of the AGPL version 3, unchanged.
 3. **Contributions.** Each contribution is licensed under the same terms.
 
 ## Reason
