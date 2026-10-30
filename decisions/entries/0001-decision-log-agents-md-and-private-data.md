@@ -1,6 +1,6 @@
 # 0001 — Decision log, `AGENTS.md`, `plans/` and private data
 
-**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-25 (user).
+**Status:** proposed, 2026-10-25 (agent); accepted, 2026-10-25 (user); superseded by [NXK2](NXK2-current-decision-log-kit.md), 2026-10-29 (user).
 
 ## Decision
 

@@ -7,7 +7,7 @@ skipped.
 
 In each `AGENTS.md`, `notes/`, `.claude/skills/` and folder named `decisions`, a
 GitHub `blob`, `tree` or `commit` link must pin a full 40-character SHA
-(decision 0001).
+(decision NXK2).
 """
 
 from __future__ import annotations

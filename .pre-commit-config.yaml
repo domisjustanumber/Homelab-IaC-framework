@@ -1,5 +1,5 @@
 ---
-# Run `uv run pre-commit install` once in each clone (decision 0001).
+# Run `uv run pre-commit install` once in each clone (decision NXK2).
 # It installs the pre-commit hooks, the commit-msg hook and the pre-push hook. Run it again after
 # this file changes.
 default_install_hook_types: [pre-commit, commit-msg, pre-push]

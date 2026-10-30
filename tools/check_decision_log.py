@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the index, the entry IDs and the size limits of the decision log (decision 0001).
+"""Check the index, the entry IDs and the size limits of the decision log (decision NXK2).
 
 Usage::
 
@@ -39,7 +39,7 @@ case. A new ID has at least one digit and at least one letter, in any position, 
 read as a word, and it does not read as a number such as ``1E23`` (decision NXK2). An older ID in lower case starts with a letter and stays valid, and
 IDs that differ only in case are one ID. An all-digit ID belongs only to an entry that had that
 number before random IDs (decision
-0001).
+NXK2).
 
 ``--new`` prints ``new: XXXX``, a random ID that is not in a log of this tree, of each other
 worktree or of each local and remote-tracking branch. In the other worktrees and on the branches, it
@@ -70,7 +70,7 @@ characters or fewer. It also does not count its ``_Edited YYYY-MM-DD (<PR>): <ki
 allowed edit line then never makes a full entry too long.
 All-digit entries up to ``LAST_UNLIMITED_ENTRY`` keep their length, because the body of an old entry
 does not change. An entry with ``renumber from XXXX`` or ``re-ID from XXXX`` keeps the exemption of
-XXXX. Standard library and the git CLI only, with no import from another repo (decision 0001).
+XXXX. Standard library and the git CLI only, with no import from another repo (decision NXK2).
 
 The tables and their status forms (``STATUS_FORMS``): Active (``accepted``, ``evidence``) and
 Proposed (``proposed``) in ``README.md``, and Historical (``rejected``, ``superseded by XXXX``,

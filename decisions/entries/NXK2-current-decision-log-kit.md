@@ -1,6 +1,6 @@
 # NXK2 — The current decision-log kit, and linters in a uv venv
 
-**Status:** proposed, 2026-10-29 (agent); recorded again 2026-10-29 (user: the second kit version).
+**Status:** proposed, 2026-10-29 (agent); recorded again 2026-10-29 (user: the second kit version); accepted, 2026-10-29 (user).
 
 Supersedes [ADR-0001](0001-decision-log-agents-md-and-private-data.md) in full. Its mirror is
 site ADR-EB4N.

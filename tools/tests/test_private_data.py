@@ -1,4 +1,4 @@
-"""No tracked file contains private data (decision 0001).
+"""No tracked file contains private data (decision NXK2).
 
 The test strings are built from parts, so that this file does not contain the patterns that it checks.
 """

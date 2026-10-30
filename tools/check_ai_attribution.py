@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Warn about AI attribution in a commit message (decision 0001).
+"""Warn about AI attribution in a commit message (decision NXK2).
 
 Usage::
 

@@ -6,7 +6,7 @@ playbook, a module, a stack or the agent instructions. Then read the Active entr
 your task. Then you do not repeat a settled question or a completed measurement. Read a Proposed
 entry only for work in its section, or when a skill tells you to. Read an entry of
 [historical.md](historical.md) only to find the reason for a decision
-([ADR-0001](entries/0001-decision-log-agents-md-and-private-data.md)).
+([ADR-NXK2](entries/NXK2-current-decision-log-kit.md)).
 
 Each entry gives the decision, its reason, the evidence (when there is evidence), the alternatives
 rejected and a "Not repeated" section for pitfalls already found. When a decision changes, add a new
@@ -22,7 +22,6 @@ These entries are `accepted` or `evidence`.
 
 | # | Decision | Status |
 |---|----------|--------|
-| [0001](entries/0001-decision-log-agents-md-and-private-data.md) | Decision log of the framework and its rules; own IDs; restate a site rule only when cited; `AGENTS.md` only; no private data | accepted |
 | [BQXN](entries/BQXN-debian-hosts-and-the-base-role.md) | Managed hosts run Debian 13, with no Ubuntu parts; the `base` role hardens sshd and installs the guest agent | accepted |
 | [EQ0Z](entries/EQ0Z-unattended-upgrades-and-reboots.md) | Unattended upgrades match Debian's security suite; the upgrade time is in the window; reboots are automatic and opt-in | accepted |
 | [GEE3](entries/GEE3-system-mail-through-msmtp.md) | System mail goes through an SMTP relay with msmtp, as a null client | accepted |
@@ -31,6 +30,7 @@ These entries are `accepted` or `evidence`.
 | [XQ9A](entries/XQ9A-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | accepted |
 | [NTK9](entries/NTK9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
 | [CVM2](entries/CVM2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
+| [NXK2](entries/NXK2-current-decision-log-kit.md) | The current decision-log kit: essential Rules, `decisions/entries/`, upper-case IDs with a digit, `ADR-` citations, no AI attribution, linters in a uv venv | accepted |
 
 ### Proposed
 
@@ -44,7 +44,6 @@ These entries wait for a decision of the user. Section is the section or area of
 | [0004](entries/0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
 | [0005](entries/0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
 | [B7ZV](entries/B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 or later | `licence` | proposed |
-| [NXK2](entries/NXK2-current-decision-log-kit.md) | The current decision-log kit: essential Rules, `decisions/entries/`, upper-case IDs with a digit, `ADR-` citations, no AI attribution, linters in a uv venv | `process` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
 `evidence; used by XXXX` or `done` are in [historical.md](historical.md).

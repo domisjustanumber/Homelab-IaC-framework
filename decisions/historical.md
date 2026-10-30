@@ -10,3 +10,4 @@ the reason for a decision. The [index](README.md) has the Active and Proposed en
 | # | Decision | Status |
 |---|----------|--------|
 | [S3XT](entries/S3XT-storage-layout-and-bind-mounted-state.md) | Docker hosts keep state apart from image churn; containerd and Docker roots on the churn unit; mounts enforced; state bind-mounted | superseded by CVM2 |
+| [0001](entries/0001-decision-log-agents-md-and-private-data.md) | Decision log of the framework and its rules; own IDs; restate a site rule only when cited; `AGENTS.md` only; no private data | superseded by NXK2 |
