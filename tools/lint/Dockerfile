@@ -6,7 +6,7 @@
 # requirements.yml (tools/lint/image-tag.sh). Do not bump it by hand.
 # The FROM line of python is the one Python version that gates a merge.
 # uv comes from a stage, because Dependabot reads only FROM lines.
-FROM ghcr.io/astral-sh/uv:0.11.8 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.7 AS uv
 
 FROM python:3.13.17-slim
 COPY --from=uv /uv /usr/local/bin/uv
