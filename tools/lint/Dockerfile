@@ -8,7 +8,7 @@
 # uv comes from a stage, because Dependabot reads only FROM lines.
 FROM ghcr.io/astral-sh/uv:0.11.8 AS uv
 
-FROM python:3.13.17-slim
+FROM python:3.15.0-slim
 COPY --from=uv /uv /usr/local/bin/uv
 
 # CI mounts a checkout that another user owns. Git refuses such a repository
