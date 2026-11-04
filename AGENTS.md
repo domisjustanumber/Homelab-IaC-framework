@@ -46,7 +46,7 @@ Run it again in each clone after `.pre-commit-config.yaml` changes.
 Use `uv run` for project commands.
 Do not depend on an activated virtual environment.
 
-Do not build a Docker image to run a tool that runs on Windows.
+On the Windows controller, do not build a Docker image to run a tool that runs on Windows.
 Run it from the uv venv with `uv run`.
 On the Windows controller, the doc checks, `yamllint`, `shellcheck` and the hooks run from the uv
 venv ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
