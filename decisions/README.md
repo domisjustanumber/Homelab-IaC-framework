@@ -32,6 +32,7 @@ These entries are `accepted` or `evidence`.
 | [CVM2](entries/CVM2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
 | [SAB7](entries/SAB7-host-templates-cite-decisions-by-id.md) | A template that a role writes to a host cites a decision by its ID only, with no path | accepted |
 | [E7ZX](entries/E7ZX-all-checks-in-the-lint-image-in-ci.md) | In CI, all checks run in the lint image; on the controller, the uv venv stays | accepted |
+| [B7ZV](entries/B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 only | accepted |
 
 ### Proposed
 
@@ -44,7 +45,6 @@ These entries wait for a decision of the user. Section is the section or area of
 | [0003](entries/0003-controller-pushes-stacks.md) | The controller pushes Compose stacks; hosts hold no Git credentials | `stacks` | proposed |
 | [0004](entries/0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
 | [0005](entries/0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
-| [B7ZV](entries/B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 only | `licence` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
 `evidence; used by XXXX` or `done` are in [historical.md](historical.md).

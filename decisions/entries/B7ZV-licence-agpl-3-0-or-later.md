@@ -1,6 +1,6 @@
 # B7ZV — The framework is licensed under the GNU AGPL, version 3 only
 
-**Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-04 (user: version 3 only).
+**Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-04 (user: version 3 only); accepted, 2026-11-04 (user).
 
 ## Decision
 

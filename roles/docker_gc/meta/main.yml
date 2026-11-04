@@ -2,7 +2,7 @@
 galaxy_info:
   author: Dom Scott
   description: Systemd service and timer that prunes images and anonymous volumes
-  license: AGPL-3.0-or-later
+  license: AGPL-3.0-only
   min_ansible_version: "2.17"
   platforms:
     - name: Debian

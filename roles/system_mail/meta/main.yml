@@ -2,7 +2,7 @@
 galaxy_info:
   author: Dom Scott
   description: msmtp null-client providing sendmail, aliases and failure mail
-  license: AGPL-3.0-or-later
+  license: AGPL-3.0-only
   min_ansible_version: "2.17"
   platforms:
     - name: Debian
