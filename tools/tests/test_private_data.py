@@ -87,7 +87,7 @@ def test_tokens_are_reported(text: str) -> None:
 
 
 def test_private_terms_are_reported_without_the_term(tmp_path: Path) -> None:
-    findings = cpd.scan_text("doc.md", "run on " + "Gera" + "ld today", ["gerald"])
+    findings = cpd.scan_text("doc.md", "run on myhost today", ["myhost"])
     assert [str(f) for f in findings] == ["doc.md:1: private term: <from .private-terms>"]
 
 
