@@ -1,5 +1,5 @@
 #!/bin/sh
-# Validate the repository (AGENTS.md section 3, ADR-NXK2).
+# Validate the repository (AGENTS.md section 3, ADR-E7ZX).
 #
 #   tools/lint.sh                 full suite
 #   tools/lint.sh <cmd> [args]    run one command in the lint container,
@@ -7,12 +7,15 @@
 #
 # yamllint and shellcheck run from the uv venv. Ansible runs only on Linux, so
 # the Ansible checks run in the pinned container (tools/lint/Dockerfile).
+# The image tag is a hash of the image inputs (tools/lint/image-tag.sh). After
+# a change of these inputs, the next run builds the new image.
 # A site builds the same image from its framework/ submodule.
+# CI runs all checks in the image with tools/lint/ci.sh.
 set -eu
 
-IMAGE=homelab-lint:2
-
 cd "$(dirname "$0")/.."
+
+IMAGE=$(sh tools/lint/image-tag.sh .)
 
 if [ "$#" -eq 0 ]; then
   echo "== yamllint"

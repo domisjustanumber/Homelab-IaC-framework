@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the repo files for private data (decision NXK2).
+"""Check the repo files for private data (decision E7ZX).
 
 Usage::
 

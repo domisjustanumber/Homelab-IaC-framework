@@ -1,5 +1,6 @@
 ---
 # Dependabot opens a pull request for each update. A human merges each pull request.
+# CI runs each check on the new versions in the lint image first (ADR-E7ZX).
 version: 2
 updates:
   # The actions in .github/workflows/.
@@ -8,10 +9,9 @@ updates:
     schedule:
       interval: weekly
 
-  # The base images of the lint image. A change of tools/lint/Dockerfile changes the image,
-  # so the same pull request must also bump IMAGE in tools/lint.sh. Without the new tag,
-  # tools/lint.sh keeps the old local image (AGENTS.md section 3).
-  # A new Python version arrives as one of these pull requests, so it gets its own label.
+  # The base images of the lint image: python and uv. A new Python version arrives as one of
+  # these pull requests, so it gets its own label. The image tag is a hash of the image inputs
+  # (tools/lint/image-tag.sh), so a pull request needs no manual tag bump.
   # The labels replace the default labels, so the list repeats them. Dependabot ignores a
   # label that the repository does not define. This file names no user (AGENTS.md section 8).
   - package-ecosystem: docker
@@ -19,3 +19,9 @@ updates:
     schedule:
       interval: weekly
     labels: [dependencies, docker, lint-image]
+
+  # uv.lock: the dev group and the ansible group of pyproject.toml.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly

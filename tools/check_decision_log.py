@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the index, the entry IDs and the size limits of the decision log (decision NXK2).
+"""Check the index, the entry IDs and the size limits of the decision log (decision E7ZX).
 
 Usage::
 
@@ -10,7 +10,7 @@ Usage::
 The tool reads each decision log in ``LOG_DIRS`` under ROOT (default: the current directory). The
 first log, ``LOG_DIR``, is the root log. A module log is a folder of a module, for example
 ``server/decisions``. Each log has the Active and Proposed tables in its ``README.md``, the
-Historical table in its ``historical.md`` and its entry files in ``ENTRIES`` (decision NXK2).
+Historical table in its ``historical.md`` and its entry files in ``ENTRIES`` (decision E7ZX).
 The labels of the root log have no prefix. The labels of a module log start with its folder. It reports:
 
 - a log folder with no ``README.md``;
@@ -36,10 +36,10 @@ reads only the files. It does not run git.
 
 All logs share one ID space. An ID has 4 characters from ``ALPHABET``, Crockford base32 in upper
 case. A new ID has at least one digit and at least one letter, in any position, so that it does not
-read as a word, and it does not read as a number such as ``1E23`` (decision NXK2). An older ID in lower case starts with a letter and stays valid, and
+read as a word, and it does not read as a number such as ``1E23`` (decision E7ZX). An older ID in lower case starts with a letter and stays valid, and
 IDs that differ only in case are one ID. An all-digit ID belongs only to an entry that had that
 number before random IDs (decision
-NXK2).
+E7ZX).
 
 ``--new`` prints ``new: XXXX``, a random ID that is not in a log of this tree, of each other
 worktree or of each local and remote-tracking branch. In the other worktrees and on the branches, it
@@ -70,7 +70,7 @@ characters or fewer. It also does not count its ``_Edited YYYY-MM-DD (<PR>): <ki
 allowed edit line then never makes a full entry too long.
 All-digit entries up to ``LAST_UNLIMITED_ENTRY`` keep their length, because the body of an old entry
 does not change. An entry with ``renumber from XXXX`` or ``re-ID from XXXX`` keeps the exemption of
-XXXX. Standard library and the git CLI only, with no import from another repo (decision NXK2).
+XXXX. Standard library and the git CLI only, with no import from another repo (decision E7ZX).
 
 The tables and their status forms (``STATUS_FORMS``): Active (``accepted``, ``evidence``) and
 Proposed (``proposed``) in ``README.md``, and Historical (``rejected``, ``superseded by XXXX``,
@@ -80,7 +80,7 @@ is an indexed entry that is not ``proposed`` or ``rejected``. A row is
 ``| [XXXX](entries/XXXX-<slug>.md) | Decision | Status |``. A Proposed row also has a Section cell
 before the Status cell: the section or area of the change as an ID in backticks, or ``none``. The
 limits of this log: 14,000 characters for ``README.md``, 20,000 for ``open-work.md``, 6,000 for
-each entry, 220,000 for the read path and 160 for a Decision cell (decision NXK2).
+each entry, 220,000 for the read path and 160 for a Decision cell (decision E7ZX).
 
 The site log has its own copy of this checker. This copy has no all-digit entries without a limit
 (``LAST_UNLIMITED_ENTRY`` is 0) and no status form for a supersession by another repo.
@@ -104,7 +104,7 @@ LOG_DIR = Path("decisions")
 # The root log first. This repo has no modules, so it has no module log.
 LOG_DIRS = (LOG_DIR,)
 # A folder where a log was before a move. Only --new reads it, in other worktrees and on branches.
-OLD_LOG_DIRS: tuple[Path, ...] = (Path("notes") / "decisions",)  # See ADR-NXK2.
+OLD_LOG_DIRS: tuple[Path, ...] = (Path("notes") / "decisions",)  # See ADR-E7ZX.
 # The folder of the entry files in each log. A log before the move to it had them in the log folder.
 ENTRIES = "entries"
 OPEN_WORK = "open-work.md"
@@ -197,7 +197,7 @@ def size(path: Path) -> int:
 
 
 def entry_size(path: Path) -> int:
-    """Characters in an entry without its status paragraph and its `_Edited` lines (decision NXK2).
+    """Characters in an entry without its status paragraph and its `_Edited` lines (decision E7ZX).
 
     Both grow after the decision, and an allowed edit cannot make them shorter.
     """

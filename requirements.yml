@@ -1,7 +1,8 @@
 ---
 # Exact versions, validated with the ansible group of uv.lock (ansible-core 2.21.5).
-# Bump deliberately: change the version here, bump IMAGE in tools/lint.sh, and
-# re-run tools/lint.sh. Ranges are not pins.
+# Bump deliberately: change the version here and re-run tools/lint.sh. The image
+# tag is a hash of this file, so the next run builds a new image (ADR-E7ZX).
+# Ranges are not pins.
 collections:
   - name: ansible.posix
     version: "2.2.2"

@@ -1,6 +1,7 @@
 #!/bin/sh
-# The Ansible checks (ADR-NXK2). Ansible runs only on Linux: in the lint
-# container (started by tools/lint.sh) or in CI from the uv venv.
+# The Ansible checks (ADR-E7ZX). Ansible runs only on Linux, so they run in the
+# lint container: tools/lint.sh starts it on the controller, and
+# tools/lint/ci.sh runs them in CI.
 set -eu
 
 echo "== ansible-lint"

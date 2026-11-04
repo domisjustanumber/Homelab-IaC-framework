@@ -10,26 +10,19 @@ name: Lint
 permissions:
   contents: read
 
-# No Docker: a GitHub-hosted Linux runner runs Ansible from the uv venv (ADR-NXK2).
+# All checks run in the lint image (ADR-E7ZX). The FROM line of tools/lint/Dockerfile is the one
+# Python version that gates a merge, so this workflow sets no python-version and no uv.
 jobs:
-  lint:
-    name: yamllint, ansible-lint, role checks and shellcheck
+  checks:
+    name: All checks in the lint image
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
     steps:
-      - uses: actions/checkout@v5
-      - uses: astral-sh/setup-uv@v10.3.0
-        with:
-          python-version: "3.13"
-      - name: Install the dev and ansible groups from uv.lock
-        run: uv sync --frozen --group ansible
-      - name: Install the pinned collections
-        run: uv run --frozen --group ansible ansible-galaxy collection install -r requirements.yml -p collections
-      - name: yamllint
-        run: uv run --frozen yamllint .
-      - name: shellcheck
-        run: git ls-files -z '*.sh' | xargs -0 uv run --frozen shellcheck
-      - name: Ansible checks
-        run: uv run --frozen --group ansible sh tools/lint/check.sh
+      - uses: actions/checkout@v7
+      - name: Build the lint image
+        run: |
+          IMAGE=$(sh tools/lint/image-tag.sh .)
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          docker build -f tools/lint/Dockerfile -t "$IMAGE" .
+      - name: yamllint, shellcheck, doc checks, ansible-lint and role checks
+        run: docker run --rm -v "$GITHUB_WORKSPACE:/repo" -w /repo "$IMAGE" sh tools/lint/ci.sh

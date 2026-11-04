@@ -1,6 +1,7 @@
-# The dev tools: the doc checks, yamllint and shellcheck, which run from the uv venv (ADR-NXK2).
-# The ansible group pins Ansible once. The lint image and CI install it from uv.lock. A plain
-# `uv sync` does not install it, because Ansible does not run on Windows.
+# The dev tools: the doc checks, yamllint and shellcheck. On the controller they run from the uv
+# venv. In CI they run in the lint image, on its Python (ADR-E7ZX). requires-python is only the
+# lower bound of the controller venv. The ansible group pins Ansible once. The lint image installs
+# it from uv.lock. A plain `uv sync` does not install it, because Ansible does not run on Windows.
 [project]
 name = "homelab-framework"
 version = "0"

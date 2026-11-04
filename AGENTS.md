@@ -20,9 +20,9 @@ This repository never holds a site value.
 | `decisions/` | Decision log ([`README.md`](decisions/README.md)) and its open work ([`open-work.md`](decisions/open-work.md)) |
 | `roles/` | Generic, host-agnostic Ansible roles |
 | `ansible.cfg`, `requirements.yml` | The Ansible config of the lint run, and the pinned collections |
-| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint suite: `lint.sh`, and the lint container in `lint/`. `tools/tests/` also tests the file checks of `lint/check_roles.py`. |
-| `pyproject.toml`, `uv.lock` | The dev tools (`pytest`, `pre-commit`, `yamllint`, `shellcheck`) and the `ansible` group of the lint container and CI |
-| `.github/workflows/` | The doc checks, the lint suite and the secret scan in CI |
+| `tools/` | The doc checks: `check_decision_log.py`, `check_links.py`, `check_private_data.py` and `check_ai_attribution.py`. Their tests are in `tools/tests/`. The lint suite: `lint.sh`, and the lint container in `lint/`, with its tag script `lint/image-tag.sh` and its CI script `lint/ci.sh`. `tools/tests/` also tests the file checks of `lint/check_roles.py`. |
+| `pyproject.toml`, `uv.lock` | The dev tools (`pytest`, `pre-commit`, `yamllint`, `shellcheck`) and the `ansible` group of the lint container |
+| `.github/workflows/` | All checks in the lint image (`lint.yml`) and the secret scan (`secrets.yml`) in CI |
 | `plans/` | A local working folder. Git ignores it. |
 
 ## 2. Skills
@@ -48,8 +48,8 @@ Do not depend on an activated virtual environment.
 
 Do not build a Docker image to run a tool that runs on Windows.
 Run it from the uv venv with `uv run`.
-The doc checks, `yamllint` and `shellcheck` run from the uv venv
-([ADR-NXK2](decisions/entries/NXK2-current-decision-log-kit.md)).
+On the Windows controller, the doc checks, `yamllint`, `shellcheck` and the hooks run from the uv
+venv ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
 Ansible runs only on Linux.
 Do not run `uv run ansible-*` on the Windows controller.
 On the Windows controller, the Ansible checks run in the pinned lint container:
@@ -69,10 +69,25 @@ The `ansible` dependency group of `pyproject.toml` pins ansible-core and `ansibl
 A plain `uv sync` does not install that group.
 The image (`tools/lint/Dockerfile`) installs the locked `ansible` group and the collections from
 `requirements.yml`.
-When the `ansible` group in `uv.lock` or `requirements.yml` changes, bump `IMAGE` in
-`tools/lint.sh`.
+The image tag is a hash of `tools/lint/Dockerfile`, `pyproject.toml`, `uv.lock` and
+`requirements.yml`.
+`tools/lint/image-tag.sh` prints it.
+Do not bump the tag by hand.
+After a change of these files, the next run of `tools/lint.sh` builds the new image.
 A site builds the same image from its `framework/` submodule.
-In CI, `.github/workflows/lint.yml` runs the same checks from the uv venv, with no Docker.
+The site gets the tag from `framework/tools/lint/image-tag.sh`.
+
+In CI, `.github/workflows/lint.yml` builds the image and runs `tools/lint/ci.sh` in it.
+`ci.sh` runs all checks: `yamllint`, `shellcheck`, the doc checks, `ansible-lint` and the role
+checks.
+It syncs the `dev` group of `uv.lock` into a second venv, on the Python of the image.
+A site runs `framework/tools/lint/ci.sh` in its own checkout.
+The `FROM python:<version>` line of `tools/lint/Dockerfile` is the one Python version that gates
+a merge.
+A workflow must not set `python-version`.
+`requires-python` is only the lower bound of the controller venv.
+Dependabot bumps the `FROM` lines and `uv.lock`.
+CI then runs each check on the new versions.
 
 Run `uv run pytest` and `tools/lint.sh`.
 These checks must pass.
@@ -124,7 +139,7 @@ Create the entry file immediately.
 Add its index row at the end of the table for its status, in the same change.
 End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
 Cite each entry as a Markdown link with `ADR-<ID>` as the link text, in upper case, for example
-[ADR-NXK2](decisions/entries/NXK2-current-decision-log-kit.md).
+[ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md).
 This rule applies to each text that you write: a tracked file, a plan, a PR body and a reply to the
 user. In a reply or a plan, the path is relative to the repository root or to the file.
 A commit message cannot hold a working link. In the commit body, write `ADR-<ID>` with no link.
@@ -144,7 +159,7 @@ Restate a site rule here only when framework code or framework documents cite it
 
 - `plans/` is a local working folder. Git ignores it. Do not commit it. Do not cite or link to
   `plans/`, or cite the content of a plan
-  ([ADR-NXK2](decisions/entries/NXK2-current-decision-log-kit.md)).
+  ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
 - Do not push to a git remote without the approval of the user. One approval for a PR covers its
   push, its draft PR and its description.
 - Ask the user before any other action that is visible outside this machine, for example a PR
@@ -165,7 +180,7 @@ Write the summary in the message text, not only in the tool description.
 ## 8. Private Data
 
 This repository is public, or it can become public. Git history is permanent
-([ADR-NXK2](decisions/entries/NXK2-current-decision-log-kit.md)).
+([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
 The rule has no exemption. No folder may hold host values.
 Do not write these in a tracked file, a commit message or a PR body:
 

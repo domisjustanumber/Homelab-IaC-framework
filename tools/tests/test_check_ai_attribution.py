@@ -1,4 +1,4 @@
-"""The commit-msg check warns about AI attribution and never stops a commit (decision NXK2).
+"""The commit-msg check warns about AI attribution and never stops a commit (decision E7ZX).
 
 The test strings are built from parts, so that this file does not contain the email addresses that
 the private-data check reports.

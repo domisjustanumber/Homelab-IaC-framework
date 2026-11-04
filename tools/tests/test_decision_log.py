@@ -1,4 +1,4 @@
-"""The decision log keeps its index and its size limits (decision NXK2)."""
+"""The decision log keeps its index and its size limits (decision E7ZX)."""
 
 from __future__ import annotations
 
@@ -269,7 +269,7 @@ def test_new_entry_over_limit_is_reported_and_old_entry_is_not(tmp_path: Path) -
 
 
 def test_entry_limit_does_not_count_the_status_paragraph(tmp_path: Path) -> None:
-    """A status change can make a full entry longer, but not too long (decision NXK2)."""
+    """A status change can make a full entry longer, but not too long (decision E7ZX)."""
     new = cdl.LAST_UNLIMITED_ENTRY + 1
     status = "**Status:** accepted, 2026-10-25 (user);\n" + "superseded by B1C2, 2026-10-29 (user). " * 20 + "\n\n"
     body = "x" * (cdl.ENTRY_LIMIT - 2)  # the blank line after the status paragraph still counts

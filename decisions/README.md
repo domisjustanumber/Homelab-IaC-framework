@@ -6,7 +6,7 @@ playbook, a module, a stack or the agent instructions. Then read the Active entr
 your task. Then you do not repeat a settled question or a completed measurement. Read a Proposed
 entry only for work in its section, or when a skill tells you to. Read an entry of
 [historical.md](historical.md) only to find the reason for a decision
-([ADR-NXK2](entries/NXK2-current-decision-log-kit.md)).
+([ADR-E7ZX](entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
 
 Each entry gives the decision, its reason, the evidence (when there is evidence), the alternatives
 rejected and a "Not repeated" section for pitfalls already found. When a decision changes, add a new
@@ -30,8 +30,8 @@ These entries are `accepted` or `evidence`.
 | [XQ9A](entries/XQ9A-guest-backups-by-the-hypervisor.md) | The hypervisor backs up each guest to PBS; no backup agent in the guest; a restore drill before go-live | accepted |
 | [NTK9](entries/NTK9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
 | [CVM2](entries/CVM2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
-| [NXK2](entries/NXK2-current-decision-log-kit.md) | The current decision-log kit: essential Rules, `decisions/entries/`, upper-case IDs with a digit, `ADR-` citations, no AI attribution, linters in a uv venv | accepted |
 | [SAB7](entries/SAB7-host-templates-cite-decisions-by-id.md) | A template that a role writes to a host cites a decision by its ID only, with no path | accepted |
+| [E7ZX](entries/E7ZX-all-checks-in-the-lint-image-in-ci.md) | In CI, all checks run in the lint image; on the controller, the uv venv stays | accepted |
 
 ### Proposed
 
@@ -45,7 +45,6 @@ These entries wait for a decision of the user. Section is the section or area of
 | [0004](entries/0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
 | [0005](entries/0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
 | [B7ZV](entries/B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 or later | `licence` | proposed |
-| [E7ZX](entries/E7ZX-all-checks-in-the-lint-image-in-ci.md) | In CI, all checks run in the lint image; on the controller, the uv venv stays | `process` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
 `evidence; used by XXXX` or `done` are in [historical.md](historical.md).
