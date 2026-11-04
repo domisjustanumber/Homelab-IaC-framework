@@ -11,7 +11,11 @@ updates:
   # The base images of the lint image. A change of tools/lint/Dockerfile changes the image,
   # so the same pull request must also bump IMAGE in tools/lint.sh. Without the new tag,
   # tools/lint.sh keeps the old local image (AGENTS.md section 3).
+  # A new Python version arrives as one of these pull requests, so it gets its own label.
+  # The labels replace the default labels, so the list repeats them. Dependabot ignores a
+  # label that the repository does not define. This file names no user (AGENTS.md section 8).
   - package-ecosystem: docker
     directory: /tools/lint
     schedule:
       interval: weekly
+    labels: [dependencies, docker, lint-image]
