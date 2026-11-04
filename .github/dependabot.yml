@@ -1,0 +1,17 @@
+---
+# Dependabot opens a pull request for each update. A human merges each pull request.
+version: 2
+updates:
+  # The actions in .github/workflows/.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # The base images of the lint image. A change of tools/lint/Dockerfile changes the image,
+  # so the same pull request must also bump IMAGE in tools/lint.sh. Without the new tag,
+  # tools/lint.sh keeps the old local image (AGENTS.md section 3).
+  - package-ecosystem: docker
+    directory: /tools/lint
+    schedule:
+      interval: weekly
