@@ -9,12 +9,16 @@ Keep technical names, field names, values, formulas, code and YAML unchanged.
 ## 1. Purpose
 
 This repository is a generic, host-agnostic homelab framework.
-It holds Ansible roles, playbooks, OpenTofu modules and generic Compose stacks.
+Today it holds Ansible roles, the lint tools and the decision log.
+Generic Compose stacks and OpenTofu modules are planned, and their entries are proposed.
+Playbooks are planned too, but they have no entry yet.
 A site repository supplies the values of each host and uses this framework.
 This repository never holds a site value.
 
 | Path | Role |
 |---|---|
+| `README.md` | The front page for readers: what the framework holds, how to use it, the licence |
+| `LICENSE` | The full text of the GNU AGPL version 3. The framework uses version 3 only ([ADR-B7ZV](decisions/entries/B7ZV-licence-agpl-3-0-or-later.md)). |
 | `AGENTS.md` | The single instructions file for coding agents |
 | `CLAUDE.md` | Imports this file. It has no other content. |
 | `decisions/` | Decision log ([`README.md`](decisions/README.md)) and its open work ([`open-work.md`](decisions/open-work.md)) |
