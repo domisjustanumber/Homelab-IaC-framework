@@ -1,6 +1,6 @@
 # 0002 — The controller is a Debian 13 VM that runs tofu, Ansible, `op`, Semaphore and the runner
 
-**Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-17 (user: the P3 design answers).
+**Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-17 (user: the P3 design answers); accepted, 2026-11-17 (user).
 
 ## Decision
 

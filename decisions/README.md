@@ -29,6 +29,7 @@ These entries are `accepted` or `evidence`.
 | [SAB7](entries/SAB7-host-templates-cite-decisions-by-id.md) | A template that a role writes to a host cites a decision by its ID only, with no path | accepted |
 | [B7ZV](entries/B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 only | accepted |
 | [3EV6](entries/3EV6-renovate-proposes-each-version-bump.md) | Renovate proposes each version bump, also of the binaries that a role pins; Dependabot goes | accepted |
+| [0002](entries/0002-controller-vm.md) | The controller is a Debian 13 VM that runs tofu, Ansible, `op`, Semaphore and the runner | accepted |
 
 ### Proposed
 
@@ -37,7 +38,6 @@ These entries wait for a decision of the user. Section is the section or area of
 
 | # | Decision | Section | Status |
 |---|----------|---------|--------|
-| [0002](entries/0002-controller-vm.md) | The controller is a Debian 13 VM that runs tofu, Ansible, `op`, Semaphore and the runner | `controller` | proposed |
 | [0003](entries/0003-controller-pushes-stacks.md) | The controller pushes Compose stacks; hosts hold no Git credentials | `stacks` | proposed |
 | [0004](entries/0004-secrets-split-by-domain.md) | Secrets: two vaults by consumer, one token for each run; hosts never run `op` | `secrets` | proposed |
 | [0005](entries/0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
