@@ -1,7 +1,7 @@
 ---
 # Exact versions, validated with the ansible group of uv.lock (ansible-core 2.21.5).
 # Bump deliberately: change the version here and re-run tools/lint.sh. The image
-# tag is a hash of this file, so the next run builds a new image (ADR-E7ZX).
+# tag is a hash of this file, so the next run builds a new image (ADR-3EV6).
 # Ranges are not pins.
 collections:
   - name: ansible.posix

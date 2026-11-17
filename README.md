@@ -86,7 +86,7 @@ tools/lint.sh
 
 `tools/lint.sh` needs Docker for the Ansible checks. In CI, `tools/lint/ci.sh` runs all the lint
 and doc checks in the lint image
-([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)). A separate workflow
+([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)). A separate workflow
 runs `gitleaks`.
 
 ## Decisions

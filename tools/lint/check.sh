@@ -1,5 +1,5 @@
 #!/bin/sh
-# The Ansible checks (ADR-E7ZX). Ansible runs only on Linux, so they run in the
+# The Ansible checks (ADR-3EV6). Ansible runs only on Linux, so they run in the
 # lint container: tools/lint.sh starts it on the controller, and
 # tools/lint/ci.sh runs them in CI.
 set -eu

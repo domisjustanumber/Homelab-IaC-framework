@@ -53,7 +53,7 @@ Do not depend on an activated virtual environment.
 On the Windows controller, do not build a Docker image to run a tool that runs on Windows.
 Run it from the uv venv with `uv run`.
 On the Windows controller, the doc checks, `yamllint`, `shellcheck` and the hooks run from the uv
-venv ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+venv ([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 Ansible runs only on Linux.
 Do not run `uv run ansible-*` on the Windows controller.
 On the Windows controller, the Ansible checks run in the pinned lint container:
@@ -90,7 +90,7 @@ The `FROM python:<version>` line of `tools/lint/Dockerfile` is the one Python ve
 a merge.
 A workflow must not set `python-version`.
 `requires-python` is only the lower bound of the controller venv.
-Dependabot bumps the `FROM` lines and `uv.lock`.
+Renovate bumps the `FROM` lines, `uv.lock` and the actions ([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 CI then runs each check on the new versions.
 
 Run `uv run pytest` and `tools/lint.sh`.
@@ -143,7 +143,7 @@ Create the entry file immediately.
 Add its index row at the end of the table for its status, in the same change.
 End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
 Cite each entry as a Markdown link with `ADR-<ID>` as the link text, in upper case, for example
-[ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md).
+[ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md).
 This rule applies to each text that you write: a tracked file, a plan, a PR body and a reply to the
 user. In a reply or a plan, the path is relative to the repository root or to the file.
 A commit message cannot hold a working link. In the commit body, write `ADR-<ID>` with no link.
@@ -163,7 +163,7 @@ Restate a site rule here only when framework code or framework documents cite it
 
 - `plans/` is a local working folder. Git ignores it. Do not commit it. Do not cite or link to
   `plans/`, or cite the content of a plan
-  ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+  ([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 - Do not push to a git remote without the approval of the user. One approval for a PR covers its
   push, its draft PR and its description.
 - Ask the user before any other action that is visible outside this machine, for example a PR
@@ -185,7 +185,7 @@ Write the summary in the message text, not only in the tool description.
 ## 8. Private Data
 
 This repository is public, or it can become public. Git history is permanent
-([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 The rule has no exemption. No folder may hold host values.
 Do not write these in a tracked file, a commit message or a PR body:
 

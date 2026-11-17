@@ -1,5 +1,5 @@
 # The dev tools: the doc checks, yamllint and shellcheck. On the controller they run from the uv
-# venv. In CI they run in the lint image, on its Python (ADR-E7ZX). requires-python is only the
+# venv. In CI they run in the lint image, on its Python (ADR-3EV6). requires-python is only the
 # lower bound of the controller venv. The ansible group pins Ansible once. The lint image installs
 # it from uv.lock. A plain `uv sync` does not install it, because Ansible does not run on Windows.
 [project]

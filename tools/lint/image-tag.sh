@@ -1,6 +1,6 @@
 #!/bin/sh
 # Print the tag of the lint image: a hash of the image inputs.
-# See ADR-E7ZX (decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md).
+# See ADR-3EV6 (decisions/entries/3EV6-renovate-proposes-each-version-bump.md).
 #
 #   sh tools/lint/image-tag.sh [<framework root>]
 #

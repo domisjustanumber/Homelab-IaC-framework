@@ -10,7 +10,7 @@ name: Lint
 permissions:
   contents: read
 
-# All checks run in the lint image (ADR-E7ZX). The FROM line of tools/lint/Dockerfile is the one
+# All checks run in the lint image (ADR-3EV6). The FROM line of tools/lint/Dockerfile is the one
 # Python version that gates a merge, so this workflow sets no python-version and no uv.
 jobs:
   checks:

@@ -14,7 +14,7 @@ task. Delete an item when its work is done. The change that closes an item recor
   values of site 0042 and supersedes it.
 - **Decide the open parts of 0003 before it is accepted:** one Compose project per host or several,
   how public and private stacks are composed and what the push copies, and whether the Compose
-  files are renamed for Dependabot.
+  files are renamed, or matched in `renovate.json`, so that Renovate finds them.
 - **Site exceptions to framework rules.** The user decided (2026-10-25): this log decides which of
   its rules allow a site exception, and how. A site entry records each use of that mechanism. A
   rule with no exception mechanism needs a change in this log first. When a rule is written here,

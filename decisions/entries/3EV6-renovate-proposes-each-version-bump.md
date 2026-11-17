@@ -1,6 +1,6 @@
 # 3EV6 — Renovate proposes each version bump; Dependabot goes
 
-**Status:** proposed, 2026-11-17 (agent).
+**Status:** proposed, 2026-11-17 (agent); accepted, 2026-11-17 (user).
 
 Supersedes [ADR-E7ZX](E7ZX-all-checks-in-the-lint-image-in-ci.md) in full. Its mirror is site
 ADR-HD03.
