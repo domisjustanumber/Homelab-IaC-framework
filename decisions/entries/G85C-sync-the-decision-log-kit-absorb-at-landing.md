@@ -1,6 +1,6 @@
 # G85C — Sync the decision-log kit: absorb at landing, restate by link, one link for each heading
 
-**Status:** proposed, 2026-11-17 (agent).
+**Status:** proposed, 2026-11-17 (agent); accepted, 2026-11-17 (user); absorbed into [Decision log](../README.md#decision-log), [Rules](../README.md#rules), [template](../template.md#decision-log-entry-template), [`AGENTS.md` §6](../../AGENTS.md#6-git-rules), `tools/check_decision_log.py`, 2026-11-17 (G85C).
 
 Its mirror is site ADR-7XGS. This entry supersedes no entry.
 [ADR-E7ZX](E7ZX-all-checks-in-the-lint-image-in-ci.md) states the log rules only by links to the
