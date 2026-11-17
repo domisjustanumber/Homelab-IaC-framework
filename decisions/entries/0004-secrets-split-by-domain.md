@@ -1,7 +1,7 @@
 # 0004 — Secrets: two vaults by consumer, one token for each run; hosts never run `op`
 
 **Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-17 (user: two vaults by consumer,
-a token for each run, a lookup only when a file is missing).
+a token for each run, a lookup only when a file is missing); accepted, 2026-11-17 (user).
 
 ## Decision
 
