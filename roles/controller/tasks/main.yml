@@ -1,7 +1,7 @@
 ---
 # The controller: its tools, its users and the launcher.
-# A human runs this role on the controller as root, with the controller token in
-# OP_SERVICE_ACCOUNT_TOKEN (README.md).
+# A human runs this role on the controller as root, through files/seed.sh, with the controller
+# token in OP_SERVICE_ACCOUNT_TOKEN (README.md).
 # See ADR-0002 (decisions/entries/0002-controller-vm.md) and
 # ADR-0004 (decisions/entries/0004-secrets-split-by-domain.md).
 - name: Assert the required values
@@ -203,3 +203,6 @@
 
 - name: Install the SSH keys
   ansible.builtin.import_tasks: keys.yml
+
+- name: Clone the site repo
+  ansible.builtin.import_tasks: checkout.yml

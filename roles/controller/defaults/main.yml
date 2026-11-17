@@ -18,6 +18,11 @@ controller_token_dir: /etc/controller/tokens
 controller_launcher: /usr/local/sbin/controller-run
 # The framework checkout whose locked `ansible` group the venv installs.
 controller_framework_dir: "{{ playbook_dir | dirname }}/framework"
+# The checkout of the site repo that the controller user owns. The run users read it.
+controller_checkout_dir: "{{ controller_dir }}/site"
+# The run users have no shell, so nobody can answer the host key prompt.
+# See ADR-1KXT (decisions/entries/1KXT-run-users-accept-a-new-host-key-on-first-use.md).
+controller_run_user_host_key_checking: accept-new
 
 controller_packages:
   - acl
