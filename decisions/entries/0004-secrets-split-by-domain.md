@@ -1,7 +1,8 @@
 # 0004 — Secrets: two vaults by consumer, one token for each run; hosts never run `op`
 
 **Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-17 (user: two vaults by consumer,
-a token for each run, a lookup only when a file is missing); accepted, 2026-11-17 (user).
+a token for each run, a lookup only when a file is missing); accepted, 2026-11-17 (user); recorded
+again 2026-11-17 before the first push (user: one run user for each token).
 
 ## Decision
 
@@ -15,10 +16,11 @@ a token for each run, a lookup only when a file is missing); accepted, 2026-11-1
 3. **One service account per vault.** Each service account can read only its own vault. Write access
    for an account needs its own decision.
 4. **One token for each run.** Only the controller holds the tokens, each as a file that only root
-   can read. The user that runs Ansible and OpenTofu cannot read them. A root-owned launcher, allowed
-   by one `sudo` rule, starts each run with only the token of the vault that the run needs. Each
-   lookup names its vault and passes that token as `service_account_token`. The host needs no `op`
-   CLI and no session, and it holds no credential that can fetch more secrets.
+   can read. Each token has its own run user with its own home. The user that owns the checkout
+   cannot read a token and is no run user. A root-owned launcher, allowed by one `sudo` rule, runs
+   each command as the run user of its token, in a transient systemd unit that ends each process of
+   the run, with only that token in `OP_SERVICE_ACCOUNT_TOKEN`. The host needs no `op` CLI and no
+   session, and it holds no credential that can fetch more secrets.
 5. **Public keys.** A public key that a host receives is an item in the hosts vault with the public
    key only. A private key is never in the hosts vault.
 
@@ -53,8 +55,8 @@ a token for each run, a lookup only when a file is missing); accepted, 2026-11-1
 - The user decided (2026-10-24) the split and that the host never runs `op`, and (2026-11-17) two
   vaults by consumer. A leaked token then reads one vault, and a host or stack run never holds the
   token that manages machines.
-- A split protects only when each run holds only its token. If one user can read each token file,
-  each playbook can read each vault.
+- A split protects only when each run holds only its token. One user for all runs can leave a file,
+  for example in `~/.ansible/plugins`, that a later run with the other token loads.
 - 1Password scopes a service account by vault, not by item. A Families plan allows 1,000 reads a
   day for all accounts. A lookup only for a missing file keeps a routine deploy at zero reads.
 - A runtime secret service keeps a live token on the host, and it gives no live rotation.
