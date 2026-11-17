@@ -2,17 +2,13 @@
 
 This log records the technical decisions of the framework, with their reasons and evidence. An entry
 explains **why**. Read this file and [open-work.md](open-work.md) before you change a role, a
-playbook, a module, a stack or the agent instructions. Then read the Active entries that apply to
-your task. Then you do not repeat a settled question or a completed measurement. Read a Proposed
-entry only for work in its section, or when a skill tells you to. Read an entry of
-[historical.md](historical.md) only to find the reason for a decision
-([ADR-E7ZX](entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+playbook, a module, a stack or the agent instructions. The [Rules](#rules) tell you which entries
+to read ([ADR-G85C](entries/G85C-sync-the-decision-log-kit-absorb-at-landing.md)).
 
 Each entry gives the decision, its reason, the evidence (when there is evidence), the alternatives
 rejected and a "Not repeated" section for pitfalls already found. When a decision changes, add a new
-entry that supersedes the old entry in full. A change of the text under a heading that an entry
-links does not supersede that entry. The body of a decided entry changes only by the edits that the
-[Rules](#rules) allow. To write an entry, use [template.md](template.md).
+entry that supersedes the old entry in full. The body of a decided entry changes only by the edits
+that the [Rules](#rules) allow. To write an entry, use [template.md](template.md).
 
 ## Index
 
@@ -31,8 +27,8 @@ These entries are `accepted` or `evidence`.
 | [NTK9](entries/NTK9-generic-roles-and-host-values.md) | Roles are generic; host values come from the inventory of the site; feature switches | accepted |
 | [CVM2](entries/CVM2-storage-layout-containerd-root-by-flag.md) | Docker hosts keep state apart from image churn; the containerd root is set by a `--root` flag, not in the package conffile | accepted |
 | [SAB7](entries/SAB7-host-templates-cite-decisions-by-id.md) | A template that a role writes to a host cites a decision by its ID only, with no path | accepted |
-| [E7ZX](entries/E7ZX-all-checks-in-the-lint-image-in-ci.md) | In CI, all checks run in the lint image; on the controller, the uv venv stays | accepted |
 | [B7ZV](entries/B7ZV-licence-agpl-3-0-or-later.md) | The framework is licensed under the GNU AGPL, version 3 only | accepted |
+| [3EV6](entries/3EV6-renovate-proposes-each-version-bump.md) | Renovate proposes each version bump, also of the binaries that a role pins; Dependabot goes | accepted |
 
 ### Proposed
 
@@ -55,24 +51,48 @@ The open work is in [open-work.md](open-work.md).
 
 ## Rules
 
+- Read the Active entries that apply to your task. Then you do not repeat a settled question or a
+  completed measurement. Read a Proposed entry only for work in its section, or when a skill tells
+  you to. Read an entry of [historical.md](historical.md) only to find the reason for a decision.
 - The body of an entry that is not `proposed` changes only by four edits: a link or anchor repair, a
   typo that does not change the meaning, the redaction of private data, and a change of ID with the
   repair of its citations. Each edit adds `_Edited YYYY-MM-DD (#PR): <kind>._` at the end of the
   entry, for example `re-ID from XXXX`. For a change of ID, the renamed entry gets
   `re-ID from XXXX`, and each repaired entry gets `citation repair`. Add these two lines only to an
   entry that is on `main`. When a change has no PR, write the entry that caused the edit in place of
-  the PR.
+  the PR. A plain-text old path in a decided entry or a script stays, and means the same file at its
+  new path.
+- An entry in a commit that is not pushed to a remote can change in that commit, in each part. Make
+  the correction and report it to the user. Do not write a new entry for it, and do not ask. The
+  four edits apply from the first push.
+- A decision that a document or code refers to must be in an entry.
 - When the source of a `proposed` entry changes (for example, the site sends a new version of the
   proposal that the entry records), edit the same entry. Do not add a second entry. Its status line
   adds `recorded again <YYYY-MM-DD> (<source>)`.
 - An absorb document is one of these: `AGENTS.md`, the skills, the Rules of this file with
   [template.md](template.md), and the docstring of a tool in `tools/` for the rules that it checks.
-  An accepted entry is absorbed when one absorb document states all of its rules.
+  A test in `tools/tests/` is a tool here. An accepted entry is absorbed when the absorb documents
+  together state all of its rules. Open work of the entry does not stop the absorb when
+  `open-work.md` states that work in full. A link to the entry is not enough.
+- Absorb at landing. The commit group that writes or lands an entry, or that writes the rules of an
+  entry into the absorb documents, absorbs the entry in its last commit when the absorb documents
+  state all of its rules. This applies in each skill and without a skill. If an absorb document
+  does not state a rule, the entry stays `accepted`. Do not ask the user.
+- The status `absorbed into` has one link for each heading that states a rule of the entry. Link a
+  heading one time, also when it states two or more rules. Link a file with no anchor only when the
+  rule is not under a heading, for example in a tool docstring or a YAML file. When the status
+  paragraph is longer than `STATUS_EXEMPTION_LIMIT`, replace the headings of one file with the
+  title heading of that file. Start with the file that has the most links. If the paragraph is
+  still too long, replace the files of one document with the title heading of its main file. A
+  commit that renames a heading repairs each status link to that heading. A change from a file link
+  to heading links is a link repair.
 - The entry that supersedes an old entry names it under its status line, as
   `Supersedes [ADR-XXXX](XXXX-<slug>.md) in full.`, and restates each rule of the old entry that
   stays. A link can restate a rule. The link must go to a heading of an absorb document, and that
-  heading must state the rule. The commit that changes the text under such a heading cites its own
-  entry next to the changed rule. A later entry that changes a rule that the linking entry states in
+  heading must state the rule. Link the heading of each kept rule that a heading states. Write text
+  only for a changed rule and for a kept rule that no heading states. The commit that changes the
+  text under such a heading cites its own entry next to the changed rule. That change does not
+  supersede the entry that links the heading. A later entry that changes a rule that the linking entry states in
   its own text supersedes the linking entry in full.
 - Only these status changes are allowed: `proposed` to `accepted` or `rejected`; `accepted` to
   `superseded by XXXX`, `absorbed into <path>#<anchor>` or `done`; `absorbed into <path>#<anchor>`
@@ -85,10 +105,13 @@ The open work is in [open-work.md](open-work.md).
   alphabet and the size limits. Its docstring states them. `tools/check_links.py` checks the links
   and the full-SHA permalinks. A tool is the source of a rule that it checks.
 - A consolidation entry states the rules that stay from a group of entries, and it supersedes each
-  entry of the group. It changes no decision. Write one when the read-path limit fails.
+  entry of the group. It changes no decision.
+- When the read path is at 90% of its limit or more, first absorb each accepted entry whose rules
+  the absorb documents state. Then write each rule that no absorb document states in the absorb
+  document where it belongs, and absorb its entry.
 - Delete an open-work item when the work is done. Put a dated fact in `open-work.md` or in an
   entry, not in `AGENTS.md`.
-- Put long evidence in a tracked file next to the entry, and link to it. A PR can lower a limit of
+- Put long evidence in a tracked file in `evidence/` of the log folder, and link to it. A PR can lower a limit of
   `tools/check_decision_log.py`. A PR that raises a limit must add an entry.
 - An ID changes only on a `re-ID:` line of `tools/check_decision_log.py`, to the ID of a new `--new`
   run. Rename the file, and change the ID in its heading and in its index row. Find the citations

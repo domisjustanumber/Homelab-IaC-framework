@@ -1,6 +1,6 @@
 # E7ZX — In CI, all checks run in the lint image; on the controller, the uv venv stays
 
-**Status:** proposed, 2026-11-04 (agent); accepted, 2026-11-04 (user).
+**Status:** proposed, 2026-11-04 (agent); accepted, 2026-11-04 (user); superseded by [3EV6](3EV6-renovate-proposes-each-version-bump.md), 2026-11-17 (3EV6).
 
 Supersedes [ADR-NXK2](NXK2-current-decision-log-kit.md) in full. Its mirror is site ADR-C7J4.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the index, the entry IDs and the size limits of the decision log (decision E7ZX).
+"""Check the index, the entry IDs and the size limits of the decision log (decision 3EV6).
 
 Usage::
 
@@ -10,7 +10,7 @@ Usage::
 The tool reads each decision log in ``LOG_DIRS`` under ROOT (default: the current directory). The
 first log, ``LOG_DIR``, is the root log. A module log is a folder of a module, for example
 ``server/decisions``. Each log has the Active and Proposed tables in its ``README.md``, the
-Historical table in its ``historical.md`` and its entry files in ``ENTRIES`` (decision E7ZX).
+Historical table in its ``historical.md`` and its entry files in ``ENTRIES`` (decision 3EV6).
 The labels of the root log have no prefix. The labels of a module log start with its folder. It reports:
 
 - a log folder with no ``README.md``;
@@ -23,6 +23,8 @@ The labels of the root log have no prefix. The labels of a module log start with
 - a link ``[XXXX](YYYY-<slug>.md)`` in a log where XXXX is not YYYY;
 - a ``# XXXX`` heading that is not the ID of its file name;
 - a Status cell that is not one of the status forms, or that is in the wrong table;
+- an ``absorbed into`` link or code span to a Markdown file with no ``#anchor``: link the heading
+  that states the rule, or the title heading of the file;
 - a ``superseded by XXXX`` or ``used by XXXX`` that names no decided entry, or that the status line of
   the entry does not link to the file of entry XXXX. The entry XXXX can be in a different log. Then
   the link has a relative path before the file name, and the path must resolve to that file;
@@ -36,10 +38,10 @@ reads only the files. It does not run git.
 
 All logs share one ID space. An ID has 4 characters from ``ALPHABET``, Crockford base32 in upper
 case. A new ID has at least one digit and at least one letter, in any position, so that it does not
-read as a word, and it does not read as a number such as ``1E23`` (decision E7ZX). An older ID in lower case starts with a letter and stays valid, and
+read as a word, and it does not read as a number such as ``1E23`` (decision 3EV6). An older ID in lower case starts with a letter and stays valid, and
 IDs that differ only in case are one ID. An all-digit ID belongs only to an entry that had that
 number before random IDs (decision
-E7ZX).
+3EV6).
 
 ``--new`` prints ``new: XXXX``, a random ID that is not in a log of this tree, of each other
 worktree or of each local and remote-tracking branch. In the other worktrees and on the branches, it
@@ -70,7 +72,7 @@ characters or fewer. It also does not count its ``_Edited YYYY-MM-DD (<PR>): <ki
 allowed edit line then never makes a full entry too long.
 All-digit entries up to ``LAST_UNLIMITED_ENTRY`` keep their length, because the body of an old entry
 does not change. An entry with ``renumber from XXXX`` or ``re-ID from XXXX`` keeps the exemption of
-XXXX. Standard library and the git CLI only, with no import from another repo (decision E7ZX).
+XXXX. Standard library and the git CLI only, with no import from another repo (decision 3EV6).
 
 The tables and their status forms (``STATUS_FORMS``): Active (``accepted``, ``evidence``) and
 Proposed (``proposed``) in ``README.md``, and Historical (``rejected``, ``superseded by XXXX``,
@@ -80,7 +82,7 @@ is an indexed entry that is not ``proposed`` or ``rejected``. A row is
 ``| [XXXX](entries/XXXX-<slug>.md) | Decision | Status |``. A Proposed row also has a Section cell
 before the Status cell: the section or area of the change as an ID in backticks, or ``none``. The
 limits of this log: 14,000 characters for ``README.md``, 20,000 for ``open-work.md``, 6,000 for
-each entry, 220,000 for the read path and 160 for a Decision cell (decision E7ZX).
+each entry, 220,000 for the read path and 160 for a Decision cell (decision 3EV6).
 
 The site log has its own copy of this checker. This copy has no all-digit entries without a limit
 (``LAST_UNLIMITED_ENTRY`` is 0) and no status form for a supersession by another repo.
@@ -104,7 +106,7 @@ LOG_DIR = Path("decisions")
 # The root log first. This repo has no modules, so it has no module log.
 LOG_DIRS = (LOG_DIR,)
 # A folder where a log was before a move. Only --new reads it, in other worktrees and on branches.
-OLD_LOG_DIRS: tuple[Path, ...] = (Path("notes") / "decisions",)  # See ADR-E7ZX.
+OLD_LOG_DIRS: tuple[Path, ...] = (Path("notes") / "decisions",)  # See ADR-3EV6.
 # The folder of the entry files in each log. A log before the move to it had them in the log folder.
 ENTRIES = "entries"
 OPEN_WORK = "open-work.md"
@@ -128,7 +130,9 @@ ALPHABET = "0123456789" + LETTERS
 # the upper-case rule, and it starts with a letter.
 ID = "(?:[" + ALPHABET + "]{4}|[" + LETTERS.lower() + "][" + ALPHABET.lower() + "]{3})"
 
-ABSORBED = r"absorbed into (?:\[[^\]]+\]\([^)\s]+\)|`[^`]+`)"
+# One link or code span for each heading or file that states a rule of the entry (the Rules).
+ABSORBED_TARGET = r"(?:\[[^\]]+\]\([^)\s]+\)|`[^`]+`)"
+ABSORBED = rf"absorbed into {ABSORBED_TARGET}(?:, {ABSORBED_TARGET})*"
 STATUS_FORMS = {
     "Active": ("accepted", "evidence"),
     "Proposed": ("proposed",),
@@ -149,7 +153,8 @@ ENTRY_LIKE = re.compile(r"^[0-9a-zA-Z]{4}-.*\.md$")
 # YAML 1.2 and spreadsheets read an ID such as 1E23 or 12E3 as a number, so no new ID has this form.
 NUMBER_LIKE = re.compile(r"\d+E\d+")
 STATUS_PARAGRAPH = re.compile(r"^\*\*Status:\*\*.*?(?=\n[ \t]*\n|\n#|\Z)", re.MULTILINE | re.DOTALL)
-STATUS_EXEMPTION_LIMIT = 1_000
+# An `absorbed into` status has one link for each heading that states a rule, so it can be long.
+STATUS_EXEMPTION_LIMIT = 2_000
 # Only the form `_Edited YYYY-MM-DD (<PR>): <kind>._` is exempt, so that no body text can hide in it.
 EDITED_LINE = re.compile(r"^_Edited \d{4}-\d{2}-\d{2} \([^\n]{1,80}\): [A-Za-z0-9 -]{1,40}\._[ \t]*$", re.MULTILINE)
 TABLE_HEADING = re.compile(r"^### (\w+)\s*$")
@@ -197,7 +202,7 @@ def size(path: Path) -> int:
 
 
 def entry_size(path: Path) -> int:
-    """Characters in an entry without its status paragraph and its `_Edited` lines (decision E7ZX).
+    """Characters in an entry without its status paragraph and its `_Edited` lines (decision 3EV6).
 
     Both grow after the decision, and an allowed edit cannot make them shorter.
     """
@@ -282,6 +287,13 @@ def status_match(status: str, table: str) -> re.Match[str] | None:
     return None
 
 
+def absorbed_targets(status: str) -> list[str]:
+    """The link targets and the code spans outside links of an `absorbed into` status."""
+    links = re.findall(r"\]\(([^)\s]+)\)", status)
+    spans = re.findall(r"`([^`]+)`", re.sub(r"\[[^\]]+\]\([^)\s]+\)", "", status))
+    return links + spans
+
+
 def status_errors(r: IndexRow, by_id: dict[str, IndexRow]) -> list[str]:
     where = r.where
     match = status_match(r.status, r.table)
@@ -298,6 +310,12 @@ def status_errors(r: IndexRow, by_id: dict[str, IndexRow]) -> list[str]:
             errors.append(f"{where}: status {r.status!r} names no other indexed entry")
         elif named.status.startswith(NOT_DECIDED):
             errors.append(f"{where}: status {r.status!r} names an entry that is {named.status!r}")
+    if r.status.startswith("absorbed into"):
+        errors.extend(
+            f"{where}: status links the Markdown file {target} with no heading anchor"
+            for target in absorbed_targets(r.status)
+            if target.endswith(".md")
+        )
     if r.table == "Proposed" and not SECTION.fullmatch(r.section):
         errors.append(
             f"{where}: Section cell {r.section!r} is not a section ID in backticks or `none`"

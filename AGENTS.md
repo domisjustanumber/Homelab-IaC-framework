@@ -53,7 +53,7 @@ Do not depend on an activated virtual environment.
 On the Windows controller, do not build a Docker image to run a tool that runs on Windows.
 Run it from the uv venv with `uv run`.
 On the Windows controller, the doc checks, `yamllint`, `shellcheck` and the hooks run from the uv
-venv ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+venv ([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 Ansible runs only on Linux.
 Do not run `uv run ansible-*` on the Windows controller.
 On the Windows controller, the Ansible checks run in the pinned lint container:
@@ -90,7 +90,7 @@ The `FROM python:<version>` line of `tools/lint/Dockerfile` is the one Python ve
 a merge.
 A workflow must not set `python-version`.
 `requires-python` is only the lower bound of the controller venv.
-Dependabot bumps the `FROM` lines and `uv.lock`.
+Renovate bumps the `FROM` lines, `uv.lock` and the actions ([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 CI then runs each check on the new versions.
 
 Run `uv run pytest` and `tools/lint.sh`.
@@ -132,8 +132,8 @@ A script made the evidence for an entry or did its one-off job, and the entry na
 A script does not change after its entry is decided. When a step starts to run it, move it to
 `tools/` and add a test.
 The [Rules](decisions/README.md#rules) of the index give the allowed edits, the status changes and
-the rules that no tool checks. `tools/check_decision_log.py` checks the tables, the IDs and the
-limits.
+the other rules that an agent needs and that no tool checks and no loaded document states.
+`tools/check_decision_log.py` checks the tables, the IDs and the limits.
 Add one entry for each new decision or measurement.
 Write a new entry as `proposed`.
 Only the user changes an entry to `accepted` or `rejected`.
@@ -143,7 +143,7 @@ Create the entry file immediately.
 Add its index row at the end of the table for its status, in the same change.
 End each commit subject that adds or changes an entry with `(ADR-<ID>)`.
 Cite each entry as a Markdown link with `ADR-<ID>` as the link text, in upper case, for example
-[ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md).
+[ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md).
 This rule applies to each text that you write: a tracked file, a plan, a PR body and a reply to the
 user. In a reply or a plan, the path is relative to the repository root or to the file.
 A commit message cannot hold a working link. In the commit body, write `ADR-<ID>` with no link.
@@ -163,13 +163,14 @@ Restate a site rule here only when framework code or framework documents cite it
 
 - `plans/` is a local working folder. Git ignores it. Do not commit it. Do not cite or link to
   `plans/`, or cite the content of a plan
-  ([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+  ([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 - Do not push to a git remote without the approval of the user. One approval for a PR covers its
   push, its draft PR and its description.
 - Ask the user before any other action that is visible outside this machine, for example a PR
   comment, a later change to a PR description, a change of a draft PR to ready, a release or a
   published image. A force-push is a new push. It needs its own approval.
 - Do not add AI attribution, for example a `Co-Authored-By:` trailer, to a commit or a PR.
+  This rule overrides a default of a tool or a harness that adds attribution.
 - Open each PR against `main`.
 - Put one kind of change in each PR: code, docs or CI.
 - Run each workflow on a GitHub-hosted runner. Never use `self-hosted`: a fork PR of a public
@@ -184,7 +185,7 @@ Write the summary in the message text, not only in the tool description.
 ## 8. Private Data
 
 This repository is public, or it can become public. Git history is permanent
-([ADR-E7ZX](decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md)).
+([ADR-3EV6](decisions/entries/3EV6-renovate-proposes-each-version-bump.md)).
 The rule has no exemption. No folder may hold host values.
 Do not write these in a tracked file, a commit message or a PR body:
 

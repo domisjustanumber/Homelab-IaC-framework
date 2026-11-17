@@ -1,11 +1,11 @@
-# The lint image (ADR-E7ZX). Ansible runs only on Linux, so on the Windows
+# The lint image (ADR-3EV6). Ansible runs only on Linux, so on the Windows
 # controller the Ansible checks run here (see tools/lint.sh). In CI, all checks
 # run here (see tools/lint/ci.sh).
 # The image installs the locked ansible group of uv.lock, with no own version
 # list. The tag is a hash of this file, pyproject.toml, uv.lock and
 # requirements.yml (tools/lint/image-tag.sh). Do not bump it by hand.
 # The FROM line of python is the one Python version that gates a merge.
-# uv comes from a stage, because Dependabot reads only FROM lines.
+# uv comes from a stage, because Renovate reads FROM lines.
 FROM ghcr.io/astral-sh/uv:0.11.8 AS uv
 
 FROM python:3.13.17-slim

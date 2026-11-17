@@ -1,11 +1,11 @@
-# Local working notes (decision E7ZX)
+# Local working notes (decision 3EV6)
 plans/
 
 # Claude Code: track only the skills. Local settings and worktrees stay out of git.
 .claude/*
 !.claude/skills/
 
-# Secrets and private data (decision E7ZX). Never commit them.
+# Secrets and private data (decision 3EV6). Never commit them.
 .env*
 *.pem
 *.key

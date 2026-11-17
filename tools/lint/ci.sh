@@ -2,7 +2,7 @@
 # All checks, in the lint image. CI runs this script in the checkout of the
 # repository that it checks. A site runs framework/tools/lint/ci.sh.
 # The controller runs tools/lint.sh instead.
-# See ADR-E7ZX (decisions/entries/E7ZX-all-checks-in-the-lint-image-in-ci.md).
+# See ADR-3EV6 (decisions/entries/3EV6-renovate-proposes-each-version-bump.md).
 #
 # The dev group of the checked repository goes into a second venv, on the
 # Python of the image. The image sets UV_PROJECT_ENVIRONMENT=/opt/lint. With

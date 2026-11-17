@@ -1,5 +1,5 @@
 #!/bin/sh
-# Validate the repository (AGENTS.md section 3, ADR-E7ZX).
+# Validate the repository (AGENTS.md section 3, ADR-3EV6).
 #
 #   tools/lint.sh                 full suite
 #   tools/lint.sh <cmd> [args]    run one command in the lint container,

@@ -1,4 +1,4 @@
-"""The decision log keeps its index and its size limits (decision E7ZX)."""
+"""The decision log keeps its index and its size limits (decision 3EV6)."""
 
 from __future__ import annotations
 
@@ -100,11 +100,12 @@ def test_matching_index_passes(tmp_path: Path) -> None:
         active=row(1, "accepted"),
         historical="\n".join(
             [
-                row(2, "absorbed into `AGENTS.md`", "y"),
+                row(2, "absorbed into `AGENTS.md#5`", "y"),
                 row(3, "absorbed into [`AGENTS.md#5`](../../AGENTS.md#5)", "z"),
+                row(4, "absorbed into [`AGENTS.md#5`](../../AGENTS.md#5), `tools/x.py`", "w"),
             ]
         ),
-        entries={"0001-x.md": "# 0001\n", "0002-y.md": "# 0002\n", "0003-z.md": ""},
+        entries={"0001-x.md": "# 0001\n", "0002-y.md": "# 0002\n", "0003-z.md": "", "0004-w.md": ""},
     )
     assert cdl.check(root) == []
 
@@ -130,6 +131,20 @@ def test_status_must_match_its_table(tmp_path: Path) -> None:
         "'superseded by 0002' must not be in the Active table" in e for e in errors
     )
     assert any("'proposed' must not be in the Historical table" in e for e in errors)
+
+
+def test_an_absorbed_status_links_a_heading_of_each_markdown_file(tmp_path: Path) -> None:
+    root = make_log(
+        tmp_path,
+        historical="\n".join(
+            [row(1, "absorbed into [`a.md`](../a.md), `tools/x.py`"), row(2, "absorbed into `b.md`", "y")]
+        ),
+        entries={"0001-x.md": "", "0002-y.md": ""},
+    )
+    errors = cdl.check(root)
+    assert any("Markdown file ../a.md with no heading anchor" in e for e in errors)
+    assert any("Markdown file b.md with no heading anchor" in e for e in errors)
+    assert not any("tools/x.py" in e for e in errors)
 
 
 def test_unknown_status_is_reported(tmp_path: Path) -> None:
@@ -269,7 +284,7 @@ def test_new_entry_over_limit_is_reported_and_old_entry_is_not(tmp_path: Path) -
 
 
 def test_entry_limit_does_not_count_the_status_paragraph(tmp_path: Path) -> None:
-    """A status change can make a full entry longer, but not too long (decision E7ZX)."""
+    """A status change can make a full entry longer, but not too long (decision 3EV6)."""
     new = cdl.LAST_UNLIMITED_ENTRY + 1
     status = "**Status:** accepted, 2026-10-25 (user);\n" + "superseded by B1C2, 2026-10-29 (user). " * 20 + "\n\n"
     body = "x" * (cdl.ENTRY_LIMIT - 2)  # the blank line after the status paragraph still counts
