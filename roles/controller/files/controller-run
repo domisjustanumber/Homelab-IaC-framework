@@ -1,0 +1,48 @@
+#!/bin/sh
+# Run one command as the run user of one token, with only that token.
+#
+#   sudo controller-run <token> <command> [args...]
+#
+# <token> names a file in TOKEN_DIR, for example `hosts` or `controller`. The token reaches the
+# command in OP_SERVICE_ACCOUNT_TOKEN, never on a command line. The command runs in a transient
+# systemd unit, so each process of the run ends with it. A run user has no sudo rule, so code in
+# a run cannot start a run with the other token.
+# See ADR-0004, rule 4.
+set -eu
+umask 077
+
+CONF=/etc/controller/controller-run.conf
+# shellcheck source=/dev/null
+. "$CONF"   # root-owned: TOKEN_DIR, VENV and RUN_USER_<token>
+
+if [ "$#" -lt 2 ]; then
+  echo "usage: controller-run <token> <command> [args...]" >&2
+  exit 64
+fi
+token=$1
+shift
+case "$token" in
+  *[!a-z]* | "") echo "controller-run: a token name has only the letters a-z" >&2; exit 64 ;;
+esac
+eval "user=\${RUN_USER_$token:-}"
+if [ -z "$user" ]; then
+  echo "controller-run: no run user for the token $token in $CONF" >&2
+  exit 64
+fi
+file=$TOKEN_DIR/$token
+if [ ! -s "$file" ]; then
+  echo "controller-run: $file is missing or empty" >&2
+  exit 66
+fi
+
+OP_SERVICE_ACCOUNT_TOKEN=$(cat "$file")
+export OP_SERVICE_ACCOUNT_TOKEN
+# --setenv=NAME with no value copies the value from this environment, not from the command line.
+exec systemd-run --quiet --pipe --wait --collect \
+  --uid="$user" --gid="$user" \
+  --working-directory="$PWD" \
+  --setenv=OP_SERVICE_ACCOUNT_TOKEN \
+  --setenv=HOME="/home/$user" \
+  --setenv=USER="$user" \
+  --setenv=PATH="$VENV/bin:/usr/local/bin:/usr/bin:/bin" \
+  -- "$@"

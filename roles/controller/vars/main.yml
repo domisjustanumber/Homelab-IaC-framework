@@ -1,0 +1,8 @@
+---
+# The inventory names that this role checks (framework NTK9 rules 3 and 4).
+# tools/lint/check_roles.py reads these lists. They are not settings.
+controller_required_values:
+  - controller_op_vault             # the vault of the items that only the controller uses
+  - controller_ssh_key_op_item      # the SSH Key item that reaches the managed machines
+  - controller_deploy_key_op_item   # the SSH Key item: a read-only deploy key of the site repo
+controller_opt_in_values: []

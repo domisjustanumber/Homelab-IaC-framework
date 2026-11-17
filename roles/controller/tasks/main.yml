@@ -1,0 +1,205 @@
+---
+# The controller: its tools, its users and the launcher.
+# A human runs this role on the controller as root, with the controller token in
+# OP_SERVICE_ACCOUNT_TOKEN (README.md).
+# See ADR-0002 (decisions/entries/0002-controller-vm.md) and
+# ADR-0004 (decisions/entries/0004-secrets-split-by-domain.md).
+- name: Assert the required values
+  ansible.builtin.import_tasks: assert.yml
+
+- name: Install the controller packages
+  ansible.builtin.apt:
+    name: "{{ controller_packages }}"
+    state: present
+
+- name: Create the controller user
+  ansible.builtin.user:
+    name: "{{ controller_user }}"
+    shell: /bin/bash
+    create_home: true
+
+# One run user for each token, each with its own home (ADR-0004 rule 4).
+- name: Create the run users
+  ansible.builtin.user:
+    name: "{{ item.value }}"
+    shell: /usr/sbin/nologin
+    create_home: true
+  loop: "{{ controller_run_users | dict2items }}"
+  loop_control:
+    label: "{{ item.value }}"
+
+- name: Create the controller directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.owner }}"
+    mode: "0755"
+  loop:
+    - { path: "{{ controller_dir }}", owner: root }
+    - { path: "{{ controller_dir }}/downloads", owner: root }
+    - { path: "{{ controller_dir }}/uv-{{ controller_uv_version }}", owner: root }
+    - { path: "{{ controller_dir }}/tofu-{{ controller_tofu_version }}", owner: root }
+    - { path: "{{ controller_dir }}/op-{{ controller_op_version }}", owner: root }
+    - { path: "{{ controller_venv }}", owner: "{{ controller_user }}" }
+  loop_control:
+    label: "{{ item.path }}"
+
+# uv and OpenTofu: get_url checks the pinned sha256 before it keeps the file (ADR-0002 rule 3).
+- name: Download uv and OpenTofu
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ controller_dir }}/downloads/{{ item.file }}"
+    checksum: "sha256:{{ item.sha256 }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - url: "https://github.com/astral-sh/uv/releases/download/{{ controller_uv_version }}/uv-x86_64-unknown-linux-gnu.tar.gz"
+      file: "uv-{{ controller_uv_version }}.tar.gz"
+      sha256: "{{ controller_uv_sha256 }}"
+    - url: "https://github.com/opentofu/opentofu/releases/download/{{ controller_tofu_version }}/tofu_{{ tofu_number }}_linux_amd64.zip"
+      file: "tofu-{{ controller_tofu_version }}.zip"
+      sha256: "{{ controller_tofu_sha256 }}"
+  loop_control:
+    label: "{{ item.file }}"
+  vars:
+    tofu_number: "{{ controller_tofu_version | regex_replace('^v', '') }}"   # the asset names have no v
+
+- name: Unpack uv and OpenTofu
+  ansible.builtin.unarchive:
+    src: "{{ controller_dir }}/downloads/{{ item.file }}"
+    dest: "{{ controller_dir }}/{{ item.dir }}"
+    remote_src: true
+    extra_opts: "{{ item.extra_opts }}"
+    creates: "{{ controller_dir }}/{{ item.dir }}/{{ item.binary }}"
+  loop:
+    - { file: "uv-{{ controller_uv_version }}.tar.gz", dir: "uv-{{ controller_uv_version }}", binary: uv, extra_opts: [--strip-components=1] }
+    - { file: "tofu-{{ controller_tofu_version }}.zip", dir: "tofu-{{ controller_tofu_version }}", binary: tofu, extra_opts: [] }
+  loop_control:
+    label: "{{ item.file }}"
+
+# op: no published checksum, so the role keeps it off the PATH until gpgv accepts its signature.
+- name: Download the 1Password CLI
+  ansible.builtin.get_url:
+    url: "https://cache.agilebits.com/dist/1P/op2/pkg/v{{ controller_op_version }}/op_linux_amd64_v{{ controller_op_version }}.zip"
+    dest: "{{ controller_dir }}/downloads/op-{{ controller_op_version }}.zip"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Unpack the 1Password CLI
+  ansible.builtin.unarchive:
+    src: "{{ controller_dir }}/downloads/op-{{ controller_op_version }}.zip"
+    dest: "{{ controller_dir }}/op-{{ controller_op_version }}"
+    remote_src: true
+    creates: "{{ controller_dir }}/op-{{ controller_op_version }}/op"
+
+- name: Install the code-signing key of 1Password
+  ansible.builtin.copy:
+    src: 1password-cli.asc
+    dest: "{{ controller_dir }}/1password-cli.asc"
+    owner: root
+    group: root
+    mode: "0644"
+  register: controller_op_key
+
+- name: Find the keyring for gpgv
+  ansible.builtin.stat:
+    path: "{{ controller_dir }}/1password-cli.gpg"
+  register: controller_op_keyring
+
+- name: Make the keyring for gpgv
+  ansible.builtin.command:
+    cmd: gpg --batch --yes --dearmor --output {{ controller_dir }}/1password-cli.gpg {{ controller_dir }}/1password-cli.asc
+  when: controller_op_key is changed or not controller_op_keyring.stat.exists
+  changed_when: true
+
+# gpgv has no state to change. A bad signature or another key fails the play.
+- name: Check the signature of the 1Password CLI
+  ansible.builtin.command:
+    cmd: >-
+      gpgv --status-fd 1 --keyring {{ controller_dir }}/1password-cli.gpg
+      {{ controller_dir }}/op-{{ controller_op_version }}/op.sig
+      {{ controller_dir }}/op-{{ controller_op_version }}/op
+  register: controller_op_signature
+  changed_when: false
+  failed_when: >-
+    controller_op_signature.rc != 0 or
+    ('[GNUPG:] VALIDSIG ' ~ controller_op_key_fingerprint) not in controller_op_signature.stdout
+
+- name: Link the tools into /usr/local/bin
+  ansible.builtin.file:
+    src: "{{ controller_dir }}/{{ item.dir }}/{{ item.binary }}"
+    dest: "/usr/local/bin/{{ item.binary }}"
+    state: link
+    force: true                   # a seed or a hand install may have left a plain file here
+  loop:
+    - { dir: "uv-{{ controller_uv_version }}", binary: uv }
+    - { dir: "tofu-{{ controller_tofu_version }}", binary: tofu }
+    - { dir: "op-{{ controller_op_version }}", binary: op }
+  loop_control:
+    label: "{{ item.binary }}"
+
+# The locked `ansible` group, the same group as in the lint image (ADR-0002 rule 3).
+- name: Install the locked ansible group into the venv
+  ansible.builtin.command:
+    cmd: uv sync --frozen --only-group ansible --no-install-project --python /usr/bin/python3
+    chdir: "{{ controller_framework_dir }}"
+  environment:
+    UV_PROJECT_ENVIRONMENT: "{{ controller_venv }}"
+    UV_PYTHON_DOWNLOADS: never
+  become: true
+  become_user: "{{ controller_user }}"
+  register: controller_venv_sync
+  changed_when: controller_venv_sync.stderr is search('^ [-+~] ', multiline=True)
+
+# The system path that the site ansible.cfg and the lint image read.
+- name: Install the pinned collections
+  ansible.builtin.command:
+    cmd: >-
+      {{ controller_venv }}/bin/ansible-galaxy collection install
+      -r {{ controller_framework_dir }}/requirements.yml -p /usr/share/ansible/collections
+  register: controller_collections
+  changed_when: "'was installed successfully' in controller_collections.stdout"
+
+- name: Create the config and token directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: /etc/controller, mode: "0755" }
+    - { path: "{{ controller_token_dir }}", mode: "0700" }
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Install the launcher
+  ansible.builtin.copy:
+    src: controller-run
+    dest: "{{ controller_launcher }}"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install the launcher config
+  ansible.builtin.template:
+    src: controller-run.conf.j2
+    dest: /etc/controller/controller-run.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Allow the controller user to start the launcher
+  ansible.builtin.template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/controller-run
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+
+- name: Install the SSH keys
+  ansible.builtin.import_tasks: keys.yml

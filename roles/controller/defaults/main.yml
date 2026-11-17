@@ -1,0 +1,43 @@
+---
+# Role defaults (framework NTK9 rule 2). The required values (vars/main.yml) come from the
+# inventory of the site.
+# See ADR-0002 (decisions/entries/0002-controller-vm.md) and
+# ADR-0004 (decisions/entries/0004-secrets-split-by-domain.md).
+
+# The user that owns the checkout and the venv. It may start the launcher, and it is no run user.
+controller_user: iac
+# One run user for each token, each with its own home (ADR-0004 rule 4).
+# The key is the name of the token file in controller_token_dir.
+controller_run_users:
+  hosts: iac-hosts
+  controller: iac-controller
+
+controller_dir: /opt/controller
+controller_venv: "{{ controller_dir }}/venv"
+controller_token_dir: /etc/controller/tokens
+controller_launcher: /usr/local/sbin/controller-run
+# The framework checkout whose locked `ansible` group the venv installs.
+controller_framework_dir: "{{ playbook_dir | dirname }}/framework"
+
+controller_packages:
+  - acl
+  - ca-certificates
+  - git
+  - gpg
+  - python3
+  - sudo
+  - unzip
+
+# shortcut: linux amd64 only; add an architecture map when a controller on arm64 exists.
+# Renovate bumps each version and its sha256 (ADR-3EV6). Keep each comment line and its pins together.
+# renovate: datasource=github-release-attachments depName=astral-sh/uv
+controller_uv_version: "0.11.8"
+controller_uv_sha256: "56dd1b66701ecb62fe896abb919444e4b83c5e8645cca953e6ddd496ff8a0feb"
+# renovate: datasource=github-release-attachments depName=opentofu/opentofu
+controller_tofu_version: "v1.13.9"
+controller_tofu_sha256: "bc44eb6b06446ba83bd4072114891987f590f66cca712737a7f1147c50c539ce"
+# 1Password publishes no checksum for op, so the role checks its GPG signature (ADR-0002 rule 3).
+# renovate: datasource=docker depName=1password/op
+controller_op_version: "2.42.0"
+# The code-signing key of 1Password (files/1password-cli.asc).
+controller_op_key_fingerprint: 3FEF9748469ADBE15DA7CA80AC2D62742012EA22  # gitleaks:allow (a public key fingerprint)
