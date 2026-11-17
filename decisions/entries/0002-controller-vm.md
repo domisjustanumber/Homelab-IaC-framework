@@ -1,6 +1,6 @@
 # 0002 — The controller is a Debian 13 VM that runs tofu, Ansible, `op`, Semaphore and the runner
 
-**Status:** proposed, 2026-10-25 (agent).
+**Status:** proposed, 2026-10-25 (agent); recorded again 2026-11-17 (user: the P3 design answers).
 
 ## Decision
 
@@ -12,8 +12,15 @@
    - the 1Password CLI `op`, version 2.30 or later ([0004](0004-secrets-split-by-domain.md));
    - Semaphore UI Community, reachable on the LAN only;
    - a GitHub self-hosted runner that serves the private site repository only.
-3. **Pinned tools.** The controller role pins the version of each tool. A tool update is a change to
-   that pin. The lint image stays separate from the controller, and it holds no secret.
+3. **Pinned tools.** Each tool has a pin, and a tool update is a change to that pin. Renovate
+   proposes each bump ([3EV6](3EV6-renovate-proposes-each-version-bump.md)):
+   - The controller venv installs the locked `ansible` group of `uv.lock`, the same group that the
+     lint image installs. The controller then runs the versions that CI tested.
+   - The `controller` role pins OpenTofu by version and sha256. It checks the sha256 of the download.
+   - The role pins `op` by version only, because 1Password publishes no checksum. It checks the GPG
+     signature of the download with the key that 1Password publishes.
+   - The runner updates itself. GitHub stops sending jobs to a runner that is too far behind.
+   The lint image stays separate from the controller, and it holds no secret.
 4. **Push, not pull.** The controller reaches each managed machine. Ansible uses SSH. OpenTofu uses
    the HTTPS API of each Proxmox VE node. A managed machine runs no agent and needs no inbound
    connection from the internet.
@@ -22,6 +29,9 @@
 6. **Single point of trust.** The controller holds the SSH identity for each managed machine, the
    1Password service-account tokens and the OpenTofu state. Each of these has its own entry or
    site decision.
+7. **Not in its own state.** The controller VM is never in OpenTofu state. A runbook and a seed
+   script build it, and a Proxmox Backup Server restore recovers it. A tofu run on the controller
+   then cannot plan to replace the machine that runs it.
 
 ## Reason
 
@@ -34,6 +44,8 @@
 - One fixed place for the tokens and the state is easier to protect than a workstation. A local
   OpenTofu state lock protects only one machine.
 - An outbound runner needs no inbound path. It adds no public hostname and no published port.
+- The user decided (2026-11-17) the pins, the install checks and that the controller stays out of
+  OpenTofu state. A pin that CI tested is the same version on the controller and in the lint image.
 
 ## Consequences
 
@@ -47,6 +59,13 @@
   path, whether the controller manages itself, whether live runs from other machines continue, and
   where the tokens are stored.
 
+## Evidence
+
+- OpenTofu publishes `tofu_<version>_SHA256SUMS` with each release, signed:
+  <https://opentofu.org/docs/intro/install/standalone/>.
+- 1Password publishes a GPG key for `op` and no checksum:
+  <https://www.1password.dev/cli/install-server/>.
+
 ## Alternatives rejected
 
 - **A Windows workstation with WSL as the controller.** The tokens and the state then live on a
@@ -54,6 +73,9 @@
 - **An LXC container.** The user chose a VM.
 - **A controller on an existing application host.** The controller then depends on the services that
   it deploys, and a fault in one stops the other.
+- **The controller in OpenTofu state, with `prevent_destroy`.** A plan on the controller can still
+  try to change the machine that runs it, and a guard is one more thing to keep correct.
+- **A hand-made sha256 for `op`.** Nobody can check it against a published value.
 
 ## Not repeated
 

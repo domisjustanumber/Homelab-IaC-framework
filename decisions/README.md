@@ -39,7 +39,7 @@ These entries wait for a decision of the user. Section is the section or area of
 |---|----------|---------|--------|
 | [0002](entries/0002-controller-vm.md) | The controller is a Debian 13 VM that runs tofu, Ansible, `op`, Semaphore and the runner | `controller` | proposed |
 | [0003](entries/0003-controller-pushes-stacks.md) | The controller pushes Compose stacks; hosts hold no Git credentials | `stacks` | proposed |
-| [0004](entries/0004-secrets-split-by-domain.md) | Secrets: vaults and service accounts split by domain; hosts never run `op` | `secrets` | proposed |
+| [0004](entries/0004-secrets-split-by-domain.md) | Secrets: two vaults by consumer, one token for each run; hosts never run `op` | `secrets` | proposed |
 | [0005](entries/0005-opentofu-scope.md) | OpenTofu provisions guests, Proxmox VE API objects and PBS backup jobs; local encrypted state | `tofu` | proposed |
 
 The entries that are `rejected`, `superseded by XXXX`, `absorbed into <path>#<anchor>`,
