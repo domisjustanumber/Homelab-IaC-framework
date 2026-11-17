@@ -1,6 +1,6 @@
 # 1KXT — The run users of the controller accept a new host key on first use
 
-**Status:** proposed, 2026-11-17 (agent: the answer of the user, 2026-11-17).
+**Status:** proposed, 2026-11-17 (agent: the answer of the user, 2026-11-17); accepted, 2026-11-17 (user).
 
 ## Decision
 
