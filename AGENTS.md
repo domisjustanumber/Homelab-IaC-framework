@@ -132,8 +132,8 @@ A script made the evidence for an entry or did its one-off job, and the entry na
 A script does not change after its entry is decided. When a step starts to run it, move it to
 `tools/` and add a test.
 The [Rules](decisions/README.md#rules) of the index give the allowed edits, the status changes and
-the rules that no tool checks. `tools/check_decision_log.py` checks the tables, the IDs and the
-limits.
+the other rules that an agent needs and that no tool checks and no loaded document states.
+`tools/check_decision_log.py` checks the tables, the IDs and the limits.
 Add one entry for each new decision or measurement.
 Write a new entry as `proposed`.
 Only the user changes an entry to `accepted` or `rejected`.
@@ -170,6 +170,7 @@ Restate a site rule here only when framework code or framework documents cite it
   comment, a later change to a PR description, a change of a draft PR to ready, a release or a
   published image. A force-push is a new push. It needs its own approval.
 - Do not add AI attribution, for example a `Co-Authored-By:` trailer, to a commit or a PR.
+  This rule overrides a default of a tool or a harness that adds attribution.
 - Open each PR against `main`.
 - Put one kind of change in each PR: code, docs or CI.
 - Run each workflow on a GitHub-hosted runner. Never use `self-hosted`: a fork PR of a public
