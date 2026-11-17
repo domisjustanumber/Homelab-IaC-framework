@@ -68,9 +68,9 @@ Requirements:
   applies a role to a host.
 - The roles target Debian 13 (trixie) QEMU/KVM VMs, for example on Proxmox VE. Turn on the QEMU
   guest agent in the VM options before you run `base`, or its guest agent task fails.
-- `base` reads the admin SSH public key from 1Password. It has no other key source. The controller
-  needs the 1Password CLI (`op`), signed in or with a service account token. A `--check` run skips
-  this lookup.
+- `base` reads the SSH public keys of the admin user from 1Password. It has no other key source.
+  The controller needs the 1Password CLI (`op`), signed in or with a service account token in
+  `OP_SERVICE_ACCOUNT_TOKEN`. A `--check` run skips this lookup.
 - After `base`, sshd accepts only key login, and root login is off. Run the later plays as
   `admin_user`, with `become`.
 - `system_mail` reads the relay password from `/etc/msmtp-password`. The role does not create or

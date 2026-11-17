@@ -5,6 +5,6 @@ base_required_values:
   - hostname
   - timezone
   - admin_user
-  - admin_ssh_key_op_item
+  - admin_ssh_key_op_items
   - op_vault
 base_opt_in_values: []

@@ -26,7 +26,7 @@ base_admin_shell: /bin/bash
 base_admin_groups:
   - sudo
 
-# 1Password field holding the admin user's public key (not a secret).
+# The 1Password field that holds each public key (not a secret).
 base_admin_ssh_key_op_field: public key
 
 # Hardening only. net.ipv4.ip_forward is deliberately absent: Docker needs it.

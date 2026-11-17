@@ -17,8 +17,8 @@ All are required. The role stops when a value is not defined, or when it is `CHA
 | `hostname` | The hostname of the host |
 | `timezone` | The IANA time zone |
 | `admin_user` | The admin user. It gets passwordless sudo. |
-| `admin_ssh_key_op_item` | The 1Password item that holds the public key of the admin user |
-| `op_vault` | The 1Password vault of that item |
+| `admin_ssh_key_op_items` | A list of 1Password items. Each item holds one public key, and the role adds each key to the admin user. For example, the key of a human and the key of the controller. |
+| `op_vault` | The 1Password vault of these items. Put only the public key in each item ([ADR-0004](../../decisions/entries/0004-secrets-split-by-domain.md) rule 5). |
 
 ## Role defaults
 
@@ -34,8 +34,9 @@ All are required. The role stops when a value is not defined, or when it is `CHA
 
 - The role is for a VM. The QEMU guest agent lets the hypervisor freeze the filesystems for a
   backup. The agent must also be on in the VM options.
-- In `--check`, the role does not install the admin key. A 1Password lookup runs on the controller
+- In `--check`, the role does not install the admin keys. A 1Password lookup runs on the controller
   also in `--check`, so the task is skipped.
+- The role adds keys. It does not remove a key that you remove from the list.
 - The role does not set `net.ipv4.ip_forward`. Docker manages it.
 - The role configures no firewall.
 - The sshd drop-in is `00-hardening.conf`. sshd keeps the first value that it reads, so this
