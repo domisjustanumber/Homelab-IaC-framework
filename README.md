@@ -17,6 +17,7 @@ submodule. This repository never holds a host value: no host name, domain, addre
 | [`docker_engine`](roles/docker_engine/README.md) | Removes the distribution container packages, installs Docker CE from the Docker apt repository, and writes `daemon.json`, the mount drop-ins and the containerd root drop-in. A change to these files restarts Docker. The restart stops each container, because `live-restore` is off. |
 | [`docker_gc`](roles/docker_gc/README.md) | Installs a daily systemd timer. It runs `docker system prune -af --filter until=<retention>`, which removes stopped containers, unused networks, unused images and the build cache. Then it runs `docker volume prune -f`, which removes only anonymous volumes. |
 | [`system_mail`](roles/system_mail/README.md) | Installs msmtp as a null client that relays all system mail to an SMTP relay. |
+| [`controller`](roles/controller/README.md) | Configures the controller VM: uv, OpenTofu and `op` at pinned versions with checked downloads, the locked Ansible venv, a run user for each 1Password token, and the launcher that gives each run only its token. |
 
 The repository also holds:
 
@@ -67,9 +68,9 @@ Requirements:
   applies a role to a host.
 - The roles target Debian 13 (trixie) QEMU/KVM VMs, for example on Proxmox VE. Turn on the QEMU
   guest agent in the VM options before you run `base`, or its guest agent task fails.
-- `base` reads the admin SSH public key from 1Password. It has no other key source. The controller
-  needs the 1Password CLI (`op`), signed in or with a service account token. A `--check` run skips
-  this lookup.
+- `base` reads the SSH public keys of the admin user from 1Password. It has no other key source.
+  The controller needs the 1Password CLI (`op`), signed in or with a service account token in
+  `OP_SERVICE_ACCOUNT_TOKEN`. A `--check` run skips this lookup.
 - After `base`, sshd accepts only key login, and root login is off. Run the later plays as
   `admin_user`, with `become`.
 - `system_mail` reads the relay password from `/etc/msmtp-password`. The role does not create or

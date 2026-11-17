@@ -92,14 +92,26 @@
     mode: "0440"
     validate: /usr/sbin/visudo -cf %s
 
-# A public key is not a secret. A lookup runs on the controller also in --check,
-# so the task is skipped in --check: a check run then needs no 1Password access.
+# assert.yml checks a value as a string, so an empty list passes there.
+- name: Assert the admin key items are a list
+  ansible.builtin.assert:
+    that:
+      - admin_ssh_key_op_items is sequence
+      - admin_ssh_key_op_items is not string
+      - admin_ssh_key_op_items | length > 0
+    fail_msg: admin_ssh_key_op_items must be a list of 1Password item names, with one item or more.
+    quiet: true
+
+# A public key is not a secret. Each item holds only the public key, in the vault of the
+# host (ADR-0004 rule 5). A lookup runs on the controller also in --check, so the task is
+# skipped in --check: a check run then needs no 1Password access.
 # See ADR-BQXN (decisions/entries/BQXN-debian-hosts-and-the-base-role.md).
-- name: Install admin user's authorized key from 1Password
+- name: Install the authorized keys of the admin user from 1Password
   ansible.posix.authorized_key:
     user: "{{ admin_user }}"
-    key: "{{ lookup('community.general.onepassword', admin_ssh_key_op_item, field=base_admin_ssh_key_op_field, vault=op_vault) }}"
+    key: "{{ lookup('community.general.onepassword', item, field=base_admin_ssh_key_op_field, vault=op_vault) }}"
     state: present
+  loop: "{{ admin_ssh_key_op_items }}"
   when: not ansible_check_mode
 
 - name: Harden sshd

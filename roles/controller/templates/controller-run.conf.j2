@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+# Read by controller-run. See ADR-0004, rule 4.
+TOKEN_DIR={{ controller_token_dir }}
+VENV={{ controller_venv }}
+{% for token, user in controller_run_users.items() %}
+RUN_USER_{{ token }}={{ user }}
+{% endfor %}

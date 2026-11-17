@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+# The controller user may start the launcher, and nothing else as root. The run users have no rule.
+# See ADR-0004, rule 4.
+{{ controller_user }} ALL=(root) NOPASSWD: {{ controller_launcher }}

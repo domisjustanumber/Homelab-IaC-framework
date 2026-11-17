@@ -3,5 +3,16 @@
   "extends": ["config:recommended", "schedule:weekly"],
   "lockFileMaintenance": {
     "enabled": true
-  }
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "A binary that a role pins: the version, and its sha256 when upstream publishes one (ADR-3EV6)",
+      "managerFilePatterns": ["/^roles/[^/]+/defaults/main\\.yml$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n\\w+_version: \"(?<currentValue>[^\"]+)\"\\n\\w+_sha256: \"(?<currentDigest>[a-f0-9]{64})\"",
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n\\w+_version: \"(?<currentValue>[^\"]+)\"\\n(?!\\w+_sha256)"
+      ]
+    }
+  ]
 }

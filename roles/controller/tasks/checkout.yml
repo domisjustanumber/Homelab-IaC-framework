@@ -1,0 +1,40 @@
+---
+# The checkout of the site repo, owned by the controller user. Git reads it with the deploy key of
+# keys.yml, and it trusts only the pinned host keys of the server.
+# The role clones once and never pulls: the controller user pulls by hand (README.md).
+# See ADR-1KXT (decisions/entries/1KXT-run-users-accept-a-new-host-key-on-first-use.md), rule 3.
+- name: Pin the host keys of the site repo server
+  ansible.builtin.known_hosts:
+    path: "/home/{{ controller_user }}/.ssh/known_hosts"
+    name: "{{ item.split()[0] }}"
+    key: "{{ item }}"
+    state: present
+  loop: "{{ controller_site_repo_host_keys }}"
+  loop_control:
+    label: "{{ item.split()[0] }} {{ item.split()[1] }}"
+  become: true
+  become_user: "{{ controller_user }}"
+
+- name: Create the checkout directory
+  ansible.builtin.file:
+    path: "{{ controller_checkout_dir }}"
+    state: directory
+    owner: "{{ controller_user }}"
+    group: "{{ controller_user }}"
+    mode: "0755"                  # the run users read the checkout
+
+# The submodule comes over public HTTPS (.gitmodules). In --check the deploy key can be missing.
+- name: Clone the site repo
+  ansible.builtin.git:
+    repo: "{{ controller_site_repo }}"
+    dest: "{{ controller_checkout_dir }}"
+    version: main
+    key_file: "/home/{{ controller_user }}/.ssh/site-deploy-key"
+    ssh_opts: "-o StrictHostKeyChecking=yes"
+    accept_hostkey: false
+    recursive: true
+    update: false
+    umask: "0022"
+  become: true
+  become_user: "{{ controller_user }}"
+  when: not ansible_check_mode

@@ -1,0 +1,68 @@
+---
+# The SSH keys of the controller, from the controller vault. Each run user gets its own copy of the
+# key that reaches the managed machines. The controller user gets the deploy key of the site repo.
+# A key is read from 1Password only when its file is missing or op_secrets_force is true.
+# See ADR-0004 (decisions/entries/0004-secrets-split-by-domain.md), rules 4 and 10.
+# Each entry is [user, file, 1Password item].
+- name: List the SSH keys
+  ansible.builtin.set_fact:
+    controller_keys: >-
+      {{ controller_run_users.values() | product(['id_ed25519'], [controller_ssh_key_op_item]) | list
+         + [[controller_user, 'site-deploy-key', controller_deploy_key_op_item]] }}
+
+- name: Create the .ssh directories
+  ansible.builtin.file:
+    path: "/home/{{ item[0] }}/.ssh"
+    state: directory
+    owner: "{{ item[0] }}"
+    group: "{{ item[0] }}"
+    mode: "0700"
+  loop: "{{ controller_keys }}"
+  loop_control:
+    label: "{{ item[0] }}/{{ item[1] }}"
+
+- name: Accept the host key of a new host on first use
+  ansible.builtin.copy:
+    dest: "/home/{{ item }}/.ssh/config"
+    content: "StrictHostKeyChecking {{ controller_run_user_host_key_checking }}\n"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: "0600"
+  loop: "{{ controller_run_users.values() | list }}"
+
+- name: Find the SSH keys
+  ansible.builtin.stat:
+    path: "/home/{{ item[0] }}/.ssh/{{ item[1] }}"
+  loop: "{{ controller_keys }}"
+  loop_control:
+    label: "{{ item[0] }}/{{ item[1] }}"
+  register: controller_key_files
+
+# onepassword_ssh_key returns the private key. OpenSSH rejects a key file without a final newline.
+- name: Render the SSH keys from 1Password
+  ansible.builtin.copy:
+    dest: "/home/{{ item.item[0] }}/.ssh/{{ item.item[1] }}"
+    content: "{{ lookup('community.general.onepassword_ssh_key', item.item[2], vault=controller_op_vault, ssh_format=true) | trim }}{{ '\n' }}"
+    owner: "{{ item.item[0] }}"
+    group: "{{ item.item[0] }}"
+    mode: "0600"
+  loop: "{{ controller_key_files.results }}"
+  loop_control:
+    label: "{{ item.item[0] }}/{{ item.item[1] }}"
+  diff: false
+  no_log: true
+  when:
+    - not ansible_check_mode
+    - not item.stat.exists or (op_secrets_force | default(false) | bool)
+
+- name: Enforce the SSH key file attributes
+  ansible.builtin.file:
+    path: "/home/{{ item[0] }}/.ssh/{{ item[1] }}"
+    state: file
+    owner: "{{ item[0] }}"
+    group: "{{ item[0] }}"
+    mode: "0600"
+  loop: "{{ controller_keys }}"
+  loop_control:
+    label: "{{ item[0] }}/{{ item[1] }}"
+  when: not ansible_check_mode
